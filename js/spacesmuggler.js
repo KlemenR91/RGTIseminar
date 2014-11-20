@@ -13,8 +13,21 @@ var backgroundPlane;
 var backgroundTexture;
 var backgroundMaterial;
 
+
+//SCORE
+var scoreText = document.createElement('div');
+scoreText.style.position = 'absolute';
+//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
+scoreText.style.width = 70;
+scoreText.style.height = 20;
+scoreText.style.backgroundColor = "white";
+scoreText.style.top = 10;
+scoreText.style.left = 10;
+document.body.appendChild(scoreText);
 var scoreTime=-1;
 var secondTime=new Date().getTime();+1000;
+
+
 function initialize() {
 	//setting up scene
 	//scena,...
@@ -183,16 +196,9 @@ function drawHUD(text){
 		scoreTime=scoreTime+1;
 		secondTime=secondTime+1000;
 	}
-	var text2 = document.createElement('div');
-	text2.style.position = 'absolute';
-	//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
-	text2.style.width = 70;
-	text2.style.height = 20;
-	text2.style.backgroundColor = "white";
-	text2.innerHTML = "Time: "+ scoreTime;
-	text2.style.top = 10;
-	text2.style.left = 10;
-	document.body.appendChild(text2);
+	scoreText.innerHTML = "Time: "+ scoreTime;
+}
+function restart(){
 
 }
 
@@ -201,7 +207,7 @@ document.onkeyup = handleKeyUp;
 
 var render = function () {
 	requestAnimationFrame( render );
-	drawHUD("haha");
+	drawHUD();
 	handleInput();
 
 	//cube.rotation.x += 0.1;
