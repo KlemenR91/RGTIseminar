@@ -2,7 +2,11 @@ var MAX_SPEED = 1.0;
 var MIN_SPEED = -1.0;
 var TURN_FACTOR = 0.05;
 
-var score=0;
+//obmocje kjer se lahko premikamo
+var MAX_Y=40;
+var MAX_X=75;
+var MIN_Y=-40;
+var MIN_X=-75;
 
 var start_position;
 var playerObject;
@@ -12,7 +16,7 @@ var renderer;
 var backgroundPlane;
 var backgroundTexture;
 var backgroundMaterial;
-
+var testtesttest="haha";
 var testingText;
 //SCORE
 var scoreText = document.createElement('div');
@@ -198,7 +202,9 @@ function moveAndRotate() {
 	//playerObject.rotation.z += rotate;
 	//playerObject.position
 	playerObject.translateY(speed);
-
+	if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
+		playerObject.translateY((-1)*speed);
+	}
 	playerObject.rotation.z += turn;
 }
 
@@ -221,7 +227,7 @@ function testing(besedilo){
 	testText.style.top = 10;
 	testText.style.left = 10;
 	document.body.appendChild(testText);
-	testText.innerHTML = besedilo+" "+playerObject.position.y;
+	testText.innerHTML = besedilo;
 
 }
 function restart(){
