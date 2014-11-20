@@ -264,7 +264,7 @@ document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
 var render = function () {
-	testing(playerObject.position.x);
+	//testing(playerObject.position.x);
 	requestAnimationFrame( render );
 	drawHUD();
 	handleInput();
