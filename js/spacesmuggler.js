@@ -26,6 +26,7 @@ scoreText.style.left = 10;
 document.body.appendChild(scoreText);
 var scoreTime=-1;
 var secondTime=new Date().getTime();+1000;
+var date = new Date();
 
 
 function initialize() {
@@ -191,7 +192,7 @@ function moveAndRotate() {
 	playerObject.rotation.z += turn;
 }
 function drawHUD(text){
-	var lastTime= new Date().getTime();
+	var lastTime= date.getTime();
 	if (secondTime < lastTime) {
 		scoreTime=scoreTime+1;
 		secondTime=secondTime+1000;
