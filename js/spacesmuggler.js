@@ -167,7 +167,7 @@ function handleKeys() {
 	if (activeKeys["restart"] == 1) {
 		// Up cursor key
 		restart();
-	}	
+	}
 }
 
 function handleInput() {
@@ -212,6 +212,7 @@ function drawHUD(text){
 function restart(){
 	scoreTime=0;
 	playerObject.position.set(0,0,0);
+	playerObject.rotation.set(0,0,0,"XYZ");
 	activeKeys["restart"] = 0;
 }
 
