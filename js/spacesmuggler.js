@@ -1,4 +1,3 @@
-
 var MAX_SPEED = 1.0;
 var MIN_SPEED = -1.0;
 var TURN_FACTOR = 0.05;
@@ -14,10 +13,9 @@ var backgroundTexture;
 var backgroundMaterial;
 
 
-//SCORE
+//SCORE 
 var scoreText = document.createElement('div');
 scoreText.style.position = 'absolute';
-//text2.style.zIndex = 1;    // if you still don't see the label, try uncommenting this
 scoreText.style.width = 70;
 scoreText.style.height = 20;
 scoreText.style.backgroundColor = "white";
@@ -26,7 +24,7 @@ scoreText.style.left = 10;
 document.body.appendChild(scoreText);
 var scoreTime=-1;
 var secondTime=new Date().getTime();+1000;
-var date = new Date();
+
 
 
 function initialize() {
@@ -191,14 +189,16 @@ function moveAndRotate() {
 
 	playerObject.rotation.z += turn;
 }
+
 function drawHUD(text){
-	var lastTime= date.getTime();
+	var lastTime= new Date().getTime();
 	if (secondTime < lastTime) {
 		scoreTime=scoreTime+1;
 		secondTime=secondTime+1000;
 	}
-	scoreText.innerHTML = "Time: "+ scoreTime;
+	scoreText.innerHTML = " Time: "+ scoreTime;
 }
+
 function restart(){
 
 }
