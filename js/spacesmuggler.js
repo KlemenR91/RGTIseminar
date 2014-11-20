@@ -4,6 +4,7 @@ var TURN_FACTOR = 0.05;
 
 var score=0;
 
+var start_position;
 var playerObject;
 var scene;
 var camera;
@@ -13,7 +14,7 @@ var backgroundTexture;
 var backgroundMaterial;
 
 
-//SCORE 
+//SCORE
 var scoreText = document.createElement('div');
 scoreText.style.position = 'absolute';
 scoreText.style.width = 70;
@@ -132,6 +133,10 @@ function handleKeyUp(event) {
 		// Down cursor key
 		activeKeys["backward"] = 0;
 	}
+	if (event.keyCode == 82) {
+		// Down cursor key
+		activeKeys["restart"] = 1;
+	}
 
 }
 
@@ -158,6 +163,11 @@ function handleKeys() {
 	} else {
 		speed = 0;
 	}
+	//restart
+	if (activeKeys["restart"] == 1) {
+		// Up cursor key
+		restart();
+	}	
 }
 
 function handleInput() {
@@ -200,7 +210,9 @@ function drawHUD(text){
 }
 
 function restart(){
-
+	scoreTime=0;
+	playerObject.position.set(0,0,0);
+	activeKeys["restart"] = 0;
 }
 
 document.onkeydown = handleKeyDown;
