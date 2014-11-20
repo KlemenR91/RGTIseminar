@@ -13,7 +13,7 @@ var backgroundPlane;
 var backgroundTexture;
 var backgroundMaterial;
 
-
+var testingText;
 //SCORE
 var scoreText = document.createElement('div');
 scoreText.style.position = 'absolute';
@@ -202,15 +202,28 @@ function moveAndRotate() {
 	playerObject.rotation.z += turn;
 }
 
-function drawHUD(text){
+function drawHUD(){
 	var lastTime= new Date().getTime();
 	if (secondTime < lastTime) {
 		scoreTime=scoreTime+1;
 		secondTime=secondTime+1000;
 	}
+	var a=playerObject.position.x;
 	scoreText.innerHTML = " Time: "+ scoreTime;
 }
+function testing(besedilo){
+	//testiranje
+	var testText = document.createElement('div');
+	testText.style.position = 'absolute';
+	testText.style.width = 200;
+	testText.style.height = 200;
+	testText.style.backgroundColor = "white";
+	testText.style.top = 10;
+	testText.style.left = 10;
+	document.body.appendChild(testText);
+	testText.innerHTML = besedilo+" "+playerObject.position.y;
 
+}
 function restart(){
 	scoreTime=0;
 	playerObject.position.set(0,0,0);
@@ -230,6 +243,9 @@ function placeBoundaries() {
 
 }
 
+function mapBoundaries(){
+
+}
 function createAsteroid() {
 
 }
@@ -242,6 +258,7 @@ document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
 var render = function () {
+	testing(playerObject.position.x);
 	requestAnimationFrame( render );
 	drawHUD();
 	handleInput();
