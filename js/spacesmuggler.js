@@ -25,6 +25,8 @@ document.body.appendChild(scoreText);
 var scoreTime=-1;
 var secondTime=new Date().getTime();+1000;
 
+var boundaries = [];
+var asteroids = [];
 
 
 function initialize() {
@@ -200,6 +202,26 @@ function drawHUD(text){
 }
 
 function restart(){
+
+}
+
+function pause() {
+
+}
+
+function createBoundary() {
+
+}
+
+function placeBoundaries() {
+
+}
+
+function createAsteroid() {
+
+}
+
+function placeAsteroids() {
 
 }
 
