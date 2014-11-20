@@ -9,7 +9,7 @@ var camera;
 var renderer;
 var backgroundPlane;
 var backgroundTexture;
-var backgroundMaterial
+var backgroundMaterial;
 
 
 function initialize() {
