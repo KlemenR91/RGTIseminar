@@ -224,7 +224,6 @@ function resetMovementVars() {
 	moveBackward = 0.0;
 	//turn = 0.0;
 }
-
 function moveAndRotate() {
 	if(speed > MAX_SPEED) {
 		speed = MAX_SPEED;
@@ -244,6 +243,16 @@ function moveAndRotate() {
 		playerObject.translateY((-1)*speed);
 	}
 	playerObject.rotation.z += turn;
+}
+function startPosition(){
+	playerObject.position.set(START_X,START_Y,0);
+	playerObject.rotation.set(0,0,0);
+	isEnd=0;
+	scoreTime=0;
+	pauseTime=0;
+	endTime=0;
+	pauseText.style.display= 'none';
+	pauseCheck=-1;
 }
 function pause(){
 	if(pauseCheck<0){
