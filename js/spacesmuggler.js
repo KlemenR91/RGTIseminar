@@ -8,6 +8,7 @@ var MAX_X=75;
 var MIN_Y=-40;
 var MIN_X=-75;
 
+
 var start_position;
 var playerObject;
 var scene;
@@ -16,8 +17,21 @@ var renderer;
 var backgroundPlane;
 var backgroundTexture;
 var backgroundMaterial;
-var testtesttest="haha";
 var testingText;
+//PAUSE
+var pauseText = document.createElement('div');
+pauseText.style.position = 'absolute';
+pauseText.style.width = 200;
+pauseText.style.height = 200;
+pauseText.style.backgroundColor = "white";
+pauseText.style.top = window.innerHeight/2;
+pauseText.style.left = window.innerWidth/2-100;
+document.body.appendChild(pauseText);
+pauseText.innerHTML = "PAVZA";
+pauseText.style.display= 'none';
+var pauseCheck=-1;
+var pauseTime=0;
+
 //SCORE
 var scoreText = document.createElement('div');
 scoreText.style.position = 'absolute';
@@ -95,7 +109,7 @@ activeKeys["forward"] = 0;
 activeKeys["backward"] = 0;
 activeKeys["rotateLeft"] = 0;
 activeKeys["rotateRight"] = 0;
-
+activeKeys["pause"]=-1;
 var moveForward = 0.0;
 var moveBackward = 0.0;
 var turn = 0.0;
@@ -117,6 +131,21 @@ function handleKeyDown(event) {
 	if (event.keyCode == 40) {
 		// Down cursor key
 		activeKeys["backward"] = 1;
+	}
+	if (event.keyCode == 82) {
+		// Down cursor key
+		activeKeys["restart"] = 1;
+	}
+	//Pause == 27
+	if (event.keyCode == 80) {
+		if(pauseCheck<0){
+			pauseTime=scoreTime;
+		}
+		else if(pauseCheck>0){
+			scoreTime=pauseTime;
+		}
+		pause();
+		pauseCheck=pauseCheck*(-1);
 	}
 
 }
@@ -141,39 +170,42 @@ function handleKeyUp(event) {
 	}
 	if (event.keyCode == 82) {
 		// Down cursor key
-		activeKeys["restart"] = 1;
+		activeKeys["restart"] = 0;
 	}
-
 }
 
 function handleKeys() {
+	if(pauseCheck<0){
+		if (activeKeys["rotateLeft"] == 1) {
+			// Left cursor key
+			turn = 1 * TURN_FACTOR;
+		} else if (activeKeys["rotateRight"] == 1) {
+			// Right cursor key
+			turn = -1 * TURN_FACTOR;
+		} else {
+			turn = 0;
+		}
 
-	//rotation
-	if (activeKeys["rotateLeft"] == 1) {
-		// Left cursor key
-		turn = 1 * TURN_FACTOR;
-	} else if (activeKeys["rotateRight"] == 1) {
-		// Right cursor key
-		turn = -1 * TURN_FACTOR;
-	} else {
-		turn = 0;
+		//movement
+		if (activeKeys["forward"] == 1) {
+			// Up cursor key
+			speed = 0.4;								//TEST
+		} else if (activeKeys["backward"] == 1) {
+			// Down cursor key
+			speed = -0.4;
+		} else {
+			speed = 0;
+		}
 	}
 
-	//movement
-	if (activeKeys["forward"] == 1) {
-		// Up cursor key
-		speed = 0.4;								//TEST
-	} else if (activeKeys["backward"] == 1) {
-		// Down cursor key
-		speed = -0.4;
-	} else {
-		speed = 0;
-	}
+
 	//restart
 	if (activeKeys["restart"] == 1) {
-		// Up cursor key
+		// pressed R
 		restart();
 	}
+
+
 }
 
 function handleInput() {
@@ -207,15 +239,26 @@ function moveAndRotate() {
 	}
 	playerObject.rotation.z += turn;
 }
+function pause(){
+	if(pauseCheck<0){
+		pauseText.style.display= 'inline';
 
+	}
+	else{
+		pauseText.style.display= 'none';
+	}
+
+}
 function drawHUD(){
 	var lastTime= new Date().getTime();
 	if (secondTime < lastTime) {
-		scoreTime=scoreTime+1;
-		secondTime=secondTime+1000;
+			scoreTime=scoreTime+1;
+			secondTime=secondTime+1000;
 	}
 	var a=playerObject.position.x;
-	scoreText.innerHTML = " Time: "+ scoreTime;
+	if(pauseCheck<0){
+		scoreText.innerHTML = " Time: "+ scoreTime;
+	}
 }
 function testing(besedilo){
 	//testiranje
@@ -227,19 +270,15 @@ function testing(besedilo){
 	testText.style.top = 10;
 	testText.style.left = 10;
 	document.body.appendChild(testText);
-	testText.innerHTML = besedilo;
+	testText.innerHTML = besedilo+" "+scoreTime;
 
 }
 function restart(){
 	scoreTime=0;
 	playerObject.position.set(0,0,0);
 	playerObject.rotation.set(0,0,0,"XYZ");
-	activeKeys["restart"] = 0;
 }
 
-function pause() {
-
-}
 
 function createBoundary() {
 
@@ -264,9 +303,10 @@ document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
 var render = function () {
-	//testing(playerObject.position.x);
+	//testing(pauseTime);
 	requestAnimationFrame( render );
 	drawHUD();
+
 	handleInput();
 
 	//cube.rotation.x += 0.1;
