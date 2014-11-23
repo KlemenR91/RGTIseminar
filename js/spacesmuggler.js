@@ -89,6 +89,7 @@ function initialize() {
 	playerObject.add(camera);		// za TEST - potrebna izboljsava
 	camera.position.z = 15;
 	playerObject.position.set(START_X,START_Y,0);
+	playerObject.rotation.set(0,0,0);
 }
 
 function setBackground(path) {
@@ -283,12 +284,15 @@ function testing(besedilo){
 }
 function restart(){
 	playerObject.position.set(START_X,START_Y,0);
+	playerObject.rotation.set(0,0,0);
 	if(pauseCheck>0){
 		pause();
 		pauseCheck=-1;
 	}
 	scoreTime=0;
 	pauseTime=0;
+	isEnd=0;
+
 }
 
 function end(){
