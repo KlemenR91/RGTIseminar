@@ -8,6 +8,19 @@ var MAX_X=75;
 var MIN_Y=-40;
 var MIN_X=-75;
 
+//ZACETEK
+var START_X=-60;
+var START_Y=0;
+
+//CILJ
+var END_X=0;
+var END_Y=0;
+//Ali je konec
+isEnd=0;
+//Koncni cas
+endTime=0;
+
+//Podatki
 var start_position;
 var playerObject;
 var scene;
@@ -16,8 +29,23 @@ var renderer;
 var backgroundPlane;
 var backgroundTexture;
 var backgroundMaterial;
-var testtesttest="haha";
-var testingText;
+//PAUSE
+//pauseCheck pove ali je vkljucena pavza ali ne. Ce je manj kot 0 NI vkljucena
+var pauseCheck=-1;
+//pauseTime pove koliko casa smo igrali do pritiska pavze
+var pauseTime=0;
+//pauseText je besedilo pavze
+var pauseText = document.createElement('div');
+pauseText.style.position = 'absolute';
+pauseText.style.width = 200;
+pauseText.style.height = 200;
+pauseText.style.backgroundColor = "white";
+pauseText.style.top = window.innerHeight/2;
+pauseText.style.left = window.innerWidth/2-100;
+document.body.appendChild(pauseText);
+pauseText.style.display= 'none';
+
+
 //SCORE
 var scoreText = document.createElement('div');
 scoreText.style.position = 'absolute';
@@ -65,6 +93,8 @@ function initialize() {
 
 	playerObject.add(camera);		// za TEST - potrebna izboljsava
 	camera.position.z = 15;
+	playerObject.position.set(START_X,START_Y,0);
+	playerObject.rotation.set(0,0,0);
 }
 
 function setBackground(path) {
@@ -100,7 +130,7 @@ activeKeys["forward"] = 0;
 activeKeys["backward"] = 0;
 activeKeys["rotateLeft"] = 0;
 activeKeys["rotateRight"] = 0;
-
+activeKeys["pause"]=-1;
 var moveForward = 0.0;
 var moveBackward = 0.0;
 var turn = 0.0;
@@ -122,6 +152,14 @@ function handleKeyDown(event) {
 	if (event.keyCode == 40) {
 		// Down cursor key
 		activeKeys["backward"] = 1;
+	}
+	if (event.keyCode == 82) {
+		// Down cursor key
+		activeKeys["restart"] = 1;
+	}
+	//Pause escape == 27
+	if (event.keyCode == 80) {
+		pause();
 	}
 
 }
@@ -146,41 +184,37 @@ function handleKeyUp(event) {
 	}
 	if (event.keyCode == 82) {
 		// Down cursor key
-		activeKeys["restart"] = 1;
+		activeKeys["restart"] = 0;
 	}
-
 }
 
 function handleKeys() {
+	if(pauseCheck<0){
+		if (activeKeys["rotateLeft"] == 1) {
+			// Left cursor key
+			turn = 1 * TURN_FACTOR;
+		} else if (activeKeys["rotateRight"] == 1) {
+			// Right cursor key
+			turn = -1 * TURN_FACTOR;
+		} else {
+			turn = 0;
+		}
 
-	//rotation
-	if (activeKeys["rotateLeft"] == 1) {
-		// Left cursor key
-		turn = 1 * TURN_FACTOR;
-		
-	} else if (activeKeys["rotateRight"] == 1) {
-		// Right cursor key
-		turn = -1 * TURN_FACTOR;
-	} else {
-		turn = 0;
+		//movement
+		if (activeKeys["forward"] == 1) {
+			// Up cursor key
+			speed = 0.4;								//TEST
+		} else if (activeKeys["backward"] == 1) {
+			// Down cursor key
+			speed = -0.4;
+		} else {
+			speed = 0;
+		}
 	}
 
-	//movement
-	if (activeKeys["forward"] == 1) {
-		// Up cursor key
-		speed = 0.4;								//TEST
-		engineActive = 1;
-	} else if (activeKeys["backward"] == 1) {
-		// Down cursor key
-		speed = -0.4;
-		engineActive = 1;
-	} else {
-		speed = 0.1;
-		engineActive = 0;
-	}
 	//restart
 	if (activeKeys["restart"] == 1) {
-		// Up cursor key
+		// pressed R
 		restart();
 	}
 }
@@ -195,7 +229,6 @@ function resetMovementVars() {
 	moveBackward = 0.0;
 	//turn = 0.0;
 }
-
 function moveAndRotate() {
 	if(speed > MAX_SPEED) {
 		speed = MAX_SPEED;
@@ -243,15 +276,39 @@ function moveAndRotate() {
 	}
 	
 }
+function startPosition(){
+	playerObject.position.set(START_X,START_Y,0);
+	playerObject.rotation.set(0,0,0);
+	isEnd=0;
+	scoreTime=0;
+	pauseTime=0;
+	endTime=0;
+	pauseText.style.display= 'none';
+	pauseCheck=-1;
+}
+function pause(){
+	if(pauseCheck<0){
+		pauseTime=scoreTime;
+		pauseText.innerHTML = "<br>PAVZA </br> Cas: "+pauseTime;
+		pauseText.style.display= 'inline';
 
+	}
+	else{
+		scoreTime=pauseTime;
+		pauseText.style.display= 'none';
+	}
+	pauseCheck=pauseCheck*(-1);
+}
 function drawHUD(){
 	var lastTime= new Date().getTime();
 	if (secondTime < lastTime) {
-		scoreTime=scoreTime+1;
-		secondTime=secondTime+1000;
+			scoreTime=scoreTime+1;
+			secondTime=secondTime+1000;
 	}
 	var a=playerObject.position.x;
-	scoreText.innerHTML = " Time: "+ scoreTime;
+	if(pauseCheck<0){
+		scoreText.innerHTML = " Time: "+ scoreTime;
+	}
 }
 function testing(besedilo){
 	//testiranje
@@ -263,20 +320,40 @@ function testing(besedilo){
 	testText.style.top = 10;
 	testText.style.left = 10;
 	document.body.appendChild(testText);
-	testText.innerHTML = besedilo;
+	testText.innerHTML = besedilo+" " + playerObject.position.y;
 
 }
 function restart(){
+	playerObject.position.set(START_X,START_Y,0);
+	playerObject.rotation.set(0,0,0);
+	if(pauseCheck>0){
+		pause();
+		pauseCheck=-1;
+	}
 	scoreTime=0;
-	playerObject.position.set(0,0,0);
-	playerObject.rotation.set(0,0,0,"XYZ");
-	activeKeys["restart"] = 0;
-}
-
-function pause() {
+	pauseTime=0;
+	isEnd=0;
 
 }
 
+function end(){
+	if(playerObject.position.x>(END_X-10) && playerObject.position.x<(END_X+10) && playerObject.position.y>(END_Y-10) && playerObject.position.y<(END_Y+10)){
+			if(isEnd==0){
+				endTime=scoreTime;
+				pauseText.innerHTML = "<br>ZMAGA</br> Potreboval si: "+endTime+"s <br>Za novo igro pritisni R</br>";
+				pauseText.style.display= 'inline';
+				pauseText.style.width = 400;
+				pauseText.style.height = 400;
+				pauseText.style.backgroundColor = "red";
+				pauseText.style.top = window.innerHeight/2-200;
+				pauseText.style.left = window.innerWidth/2-200;
+				pauseTime=scoreTime;
+				pauseCheck=1;
+				speed=0;
+				isEnd=1;
+			}
+	}
+}
 function createBoundary() {
 
 }
@@ -315,8 +392,9 @@ document.onkeyup = handleKeyUp;
 
 var render = function () {
 	//testing(playerObject.position.x);
-	requestAnimationFrame( render );
+	requestAnimationFrame(render);
 	drawHUD();
+	end();
 	handleInput();
 
 	//cube.rotation.x += 0.1;
