@@ -33,6 +33,11 @@ var secondTime=new Date().getTime();+1000;
 var boundaries = [];
 var asteroids = [];
 
+var asteroidTextures = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
+var level1_asteroidCoords = [[10, 20], [10, 25], [20, 20]]	//x, y
+
+var playerObjRotation = 0;
+var engineActive = 0;
 
 function initialize() {
 	//setting up scene
@@ -78,7 +83,7 @@ function setBackground(path) {
 	//backgroundPlane.material.side = THREE.DoubleSide;
 	//backgroundPlane.position.x = 10;
 	//backgroundPlane.position.y += 10;
-	backgroundPlane.position.z -= 10;
+	backgroundPlane.position.z -= 3;
 
 	//backgroundPlane.rotation.z = Math.PI / 2;
 	scene.add(backgroundPlane);
@@ -152,6 +157,7 @@ function handleKeys() {
 	if (activeKeys["rotateLeft"] == 1) {
 		// Left cursor key
 		turn = 1 * TURN_FACTOR;
+		
 	} else if (activeKeys["rotateRight"] == 1) {
 		// Right cursor key
 		turn = -1 * TURN_FACTOR;
@@ -163,11 +169,14 @@ function handleKeys() {
 	if (activeKeys["forward"] == 1) {
 		// Up cursor key
 		speed = 0.4;								//TEST
+		engineActive = 1;
 	} else if (activeKeys["backward"] == 1) {
 		// Down cursor key
 		speed = -0.4;
+		engineActive = 1;
 	} else {
-		speed = 0;
+		speed = 0.1;
+		engineActive = 0;
 	}
 	//restart
 	if (activeKeys["restart"] == 1) {
@@ -201,11 +210,38 @@ function moveAndRotate() {
 
 	//playerObject.rotation.z += rotate;
 	//playerObject.position
-	playerObject.translateY(speed);
+	
+	//move player object
+	//playerObject.translateY(speed);
+	/*
+	var matrix = new THREE.Matrix4();
+	matrix.extractRotation( playerObject.matrix );
+
+	var direction = new THREE.Vector3(1, 0, 0);
+	direction = matrix.multiplyVector3(direction);
+	
+	playerObject.translateOnAxis(direction, speed);
+	*/
+	
+	if (engineActive == 1) {
+		playerObject.translateY(speed);
+		playerObjRotation = playerObject.rotation.clone();
+	} else {
+		var curRotation = playerObject.rotation.clone();	//bi bilo bolje kar v world matrix???
+		playerObject.rotation.copy(playerObjRotation);
+		playerObject.translateY(speed);
+		playerObject.rotation.copy(curRotation);
+	}
+	
 	if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
 		playerObject.translateY((-1)*speed);
 	}
-	playerObject.rotation.z += turn;
+	
+	
+	if (turn != 0) {
+		playerObject.rotation.z += turn;
+	}
+	
 }
 
 function drawHUD(){
@@ -252,11 +288,25 @@ function placeBoundaries() {
 function mapBoundaries(){
 
 }
-function createAsteroid() {
 
+function createAsteroid() {
+	var p = Math.round(Math.random() * (asteroidTextures.length - 1));
+	
+	var geom = new THREE.SphereGeometry(4, 8, 8);
+	var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
+	var mat = new THREE.MeshBasicMaterial({ map : texture });
+	
+	var aster = new THREE.Mesh( geom, mat );
+	return aster;
 }
 
 function placeAsteroids() {
+	for (var i = 0; i < level1_asteroidCoords.length; i++) {
+		var currentAster = createAsteroid();
+		currentAster.position.set(level1_asteroidCoords[i][0], level1_asteroidCoords[i][1], 0);
+		asteroids.push(currentAster);
+		scene.add(currentAster);
+	}
 
 }
 
@@ -264,7 +314,7 @@ document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
 var render = function () {
-	testing(playerObject.position.x);
+	//testing(playerObject.position.x);
 	requestAnimationFrame( render );
 	drawHUD();
 	handleInput();
@@ -279,8 +329,10 @@ var render = function () {
 	//changing the camera position a bit, so its not on top of the object
 	camera.position.x = 0;
 	camera.position.y = 6;
+	//camera.rotation.x = 0.2;
 
 	renderer.render(scene, camera);
 };
 
+placeAsteroids();
 render();
