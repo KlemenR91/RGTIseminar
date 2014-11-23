@@ -204,11 +204,14 @@ function handleKeys() {
 		if (activeKeys["forward"] == 1) {
 			// Up cursor key
 			speed = 0.4;								//TEST
+			engineActive = 1;
 		} else if (activeKeys["backward"] == 1) {
 			// Down cursor key
 			speed = -0.4;
+			engineActive = 1;
 		} else {
-			speed = 0;
+			speed = 0.1;
+			engineActive = 0;
 		}
 	}
 
