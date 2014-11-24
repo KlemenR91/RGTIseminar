@@ -88,7 +88,7 @@ function initialize() {
 	playerObject = new THREE.Mesh( geometry, material );
 	scene.add( playerObject );
 
-	var backgroundFilePath = "res/free_space_galaxy_texture.jpg";
+	var backgroundFilePath = "res/stardust-1920x1080.png";
 	setBackground(backgroundFilePath);
 
 	playerObject.add(camera);		// za TEST - potrebna izboljsava
