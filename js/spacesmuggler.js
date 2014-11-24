@@ -295,6 +295,12 @@ function pause(){
 		pauseText.innerHTML = "<br>PAVZA </br> Cas: "+pauseTime;
 		pauseText.style.display= 'inline';
 		speed=0;
+		pauseText.style.position = 'absolute';
+		pauseText.style.width = 200;
+		pauseText.style.height = 200;
+		pauseText.style.backgroundColor = "white";
+		pauseText.style.top = window.innerHeight/2;
+		pauseText.style.left = window.innerWidth/2-100;
 
 	}
 	else{
