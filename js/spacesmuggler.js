@@ -263,7 +263,9 @@ function resetMovementVars() {
 }
 
 function moveAndRotate() {
-	checkCollision();
+	prevX=playerObject.position.x;
+	prevY=playerObject.position.y;
+
 	if(speed > MAX_SPEED) {
 		speed = MAX_SPEED;
 	}
@@ -308,7 +310,12 @@ function moveAndRotate() {
 	if (turn != 0) {
 		playerObject.rotation.z += turn;
 	}
-
+	checkCollision();
+	if(collisionDetected==1){
+		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*3;
+		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*3;
+	}
+	collisionDetected=0;
 }
 function startPosition(){
 	playerObject.position.set(START_X,START_Y,0);
