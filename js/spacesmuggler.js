@@ -66,6 +66,8 @@ var level1_asteroidCoords = [[10, 20], [10, 25], [20, 20]]	//x, y
 
 var playerObjRotation = 0;
 var engineActive = 0;
+var engineStarted = 0;
+var goal;
 
 function initialize() {
 	//setting up scene
@@ -120,8 +122,6 @@ function setBackground(path) {
 	// END OF SETTING BACKGROUND
 
 }
-
-initialize();
 
 
 //map for input values
@@ -347,7 +347,7 @@ function restart(){
 }
 
 function end(){
-	if(playerObject.position.x>(END_X-10) && playerObject.position.x<(END_X+10) && playerObject.position.y>(END_Y-10) && playerObject.position.y<(END_Y+10)){
+	if(playerObject.position.x>(END_X-1) && playerObject.position.x<(END_X+1) && playerObject.position.y>(END_Y-1) && playerObject.position.y<(END_Y+1)){
 			if(isEnd==0){
 				endTime=scoreTime;
 				pauseText.innerHTML = "<br>ZMAGA</br> Potreboval si: "+endTime+"s <br>Za novo igro pritisni R</br>";
@@ -397,6 +397,17 @@ function placeAsteroids() {
 
 }
 
+function placeGoal() {
+	var geom = new THREE.BoxGeometry(2, 2, 2);
+	var texture = THREE.ImageUtils.loadTexture("res/goalTexture.png");
+	
+	goalMat = new THREE.MeshBasicMaterial({ map : texture });
+	goal = new THREE.Mesh( geom, goalMat );
+	scene.add(goal);
+	
+	goal.position.set(END_X, END_Y, 0);
+}
+
 document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
@@ -422,5 +433,14 @@ var render = function () {
 	renderer.render(scene, camera);
 };
 
-placeAsteroids();
-render();
+function startGame() {
+	initialize();
+	
+	placeAsteroids();
+	placeGoal();
+	render();
+}
+
+//object.onload = startGame();
+var manager = new THREE.LoadingManager(); 
+manager.onLoad = startGame();
