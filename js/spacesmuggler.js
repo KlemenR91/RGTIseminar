@@ -246,7 +246,7 @@ function moveAndRotate() {
 
 	//playerObject.rotation.z += rotate;
 	//playerObject.position
-	
+
 	//move player object
 	//playerObject.translateY(speed);
 	/*
@@ -255,10 +255,10 @@ function moveAndRotate() {
 
 	var direction = new THREE.Vector3(1, 0, 0);
 	direction = matrix.multiplyVector3(direction);
-	
+
 	playerObject.translateOnAxis(direction, speed);
 	*/
-	
+
 	if (engineActive == 1) {
 		playerObject.translateY(speed);
 		playerObjRotation = playerObject.rotation.clone();
@@ -268,16 +268,16 @@ function moveAndRotate() {
 		playerObject.translateY(speed);
 		playerObject.rotation.copy(curRotation);
 	}
-	
+
 	if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
 		playerObject.translateY((-1)*speed);
 	}
-	
-	
+
+
 	if (turn != 0) {
 		playerObject.rotation.z += turn;
 	}
-	
+
 }
 function startPosition(){
 	playerObject.position.set(START_X,START_Y,0);
@@ -294,6 +294,7 @@ function pause(){
 		pauseTime=scoreTime;
 		pauseText.innerHTML = "<br>PAVZA </br> Cas: "+pauseTime;
 		pauseText.style.display= 'inline';
+		speed=0;
 
 	}
 	else{
@@ -371,11 +372,11 @@ function mapBoundaries(){
 
 function createAsteroid() {
 	var p = Math.round(Math.random() * (asteroidTextures.length - 1));
-	
+
 	var geom = new THREE.SphereGeometry(4, 8, 8);
 	var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
-	
+
 	var aster = new THREE.Mesh( geom, mat );
 	return aster;
 }
