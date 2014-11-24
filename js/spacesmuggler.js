@@ -1,6 +1,6 @@
 var MAX_SPEED = 1.0;
 var MIN_SPEED = -1.0;
-var TURN_FACTOR = 0.05;
+var TURN_FACTOR = 0.03;
 
 //obmocje kjer se lahko premikamo
 var MAX_Y=40;
@@ -448,7 +448,7 @@ document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
 var render = function () {
-	testing(playerObject.position.x);
+	//testing(playerObject.position.x);
 
 	requestAnimationFrame(render);
 	drawHUD();
