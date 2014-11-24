@@ -69,7 +69,7 @@ var level1_asteroidCoords = [[10, 20], [10, 25], [20, 20]]	//x, y
 
 var playerObjRotation = 0;
 var engineActive = 0;
-var engineStarted = 0;
+var engineOn = 0;
 var goal;
 
 function initialize() {
