@@ -71,6 +71,7 @@ var playerObjRotation = 0;
 var engineActive = 0;
 var engineOn = 0;
 var goal;
+var collisionDetected=0;
 
 function initialize() {
 	//setting up scene
@@ -100,6 +101,17 @@ function initialize() {
 	camera.position.z = 15;
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
+	playerObject.rays=[
+		new THREE.Vector3(0, 0, 1),
+		new THREE.Vector3(1, 0, 1),
+		new THREE.Vector3(1, 0, 0),
+		new THREE.Vector3(1, 0, -1),
+		new THREE.Vector3(0, 0, -1),
+		new THREE.Vector3(-1, 0, -1),
+		new THREE.Vector3(-1, 0, 0),
+		new THREE.Vector3(-1, 0, 1)
+	];
+	playerObject.caster=new THREE.Raycaster();
 }
 
 function setBackground(path) {
@@ -229,13 +241,29 @@ function handleInput() {
 	handleKeys();
 }
 
+function checkCollision(){
+	var collisions;
+	var i;
+	var distance = 1;
+	var obstacles = asteroids;
+	for(i=0;i < playerObject.rays.length; i++){
+		playerObject.caster.set(playerObject.position, playerObject.rays[i]);
+		collisions=playerObject.caster.intersectObjects(obstacles);
+		if (collisions.length > 0 && collisions[0].distance <= distance) {
+			collisionDetected=1;
+		}
+	}
+}
+
 function resetMovementVars() {
 
 	moveForward = 0.0;
 	moveBackward = 0.0;
 	//turn = 0.0;
 }
+
 function moveAndRotate() {
+	checkCollision();
 	if(speed > MAX_SPEED) {
 		speed = MAX_SPEED;
 	}
@@ -381,9 +409,7 @@ function placeBoundaries() {
 
 }
 
-function mapBoundaries(){
 
-}
 
 function createAsteroid() {
 	var p = Math.round(Math.random() * (asteroidTextures.length - 1));
@@ -409,30 +435,46 @@ function placeAsteroids() {
 function placeGoal() {
 	var geom = new THREE.BoxGeometry(2, 2, 2);
 	var texture = THREE.ImageUtils.loadTexture("res/goalTexture.png");
-	
+
 	goalMat = new THREE.MeshBasicMaterial({ map : texture });
 	goal = new THREE.Mesh( geom, goalMat );
 	scene.add(goal);
-	
+
 	goal.position.set(END_X, END_Y, 0);
 }
+
 
 document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
 
 var render = function () {
-	//testing(playerObject.position.x);
+	testing(playerObject.position.x);
+
 	requestAnimationFrame(render);
 	drawHUD();
 	end();
 	handleInput();
+	checkCollision();
 
 	//cube.rotation.x += 0.1;
 	//cube.rotation.y += 0.1;
 	//cube.position.z += 0.01;
-
 	resetMovementVars();
 	moveAndRotate();
+
+	// prevPositionX=playerObject.position.x;
+	// prevPositionY=playerObject.position.y;
+	// if(collisionDetected==0){
+	// 	resetMovementVars();
+	// 	moveAndRotate();
+	// }
+	// else{
+	// 	playerObject.position.x=prevPositionX;
+	// 	playerObject.position.y=prevPositionY;
+	// 	collisionDetected=0;
+	//
+	// }
+
 
 	//changing the camera position a bit, so its not on top of the object
 	camera.position.x = 0;
@@ -444,12 +486,12 @@ var render = function () {
 
 function startGame() {
 	initialize();
-	
+
 	placeAsteroids();
 	placeGoal();
 	render();
 }
 
 //object.onload = startGame();
-var manager = new THREE.LoadingManager(); 
+var manager = new THREE.LoadingManager();
 manager.onLoad = startGame();
