@@ -39,11 +39,11 @@ var pauseText = document.createElement('div');
 pauseText.style.position = 'absolute';
 pauseText.style.width = 200;
 pauseText.style.height = 200;
-pauseText.style.backgroundColor = "white";
 pauseText.style.top = window.innerHeight/2;
 pauseText.style.left = window.innerWidth/2-100;
 document.body.appendChild(pauseText);
 pauseText.style.display= 'none';
+pauseText.style.backgroundColor = "transparent";
 
 
 //SCORE
@@ -54,6 +54,9 @@ scoreText.style.height = 20;
 scoreText.style.backgroundColor = "white";
 scoreText.style.top = 10;
 scoreText.style.left = 10;
+scoreText.style.color = "white";
+scoreText.style.fontSize="large";
+scoreText.style.backgroundColor = "transparent";
 document.body.appendChild(scoreText);
 var scoreTime=-1;
 var secondTime=new Date().getTime();+1000;
@@ -292,15 +295,18 @@ function startPosition(){
 function pause(){
 	if(pauseCheck<0){
 		pauseTime=scoreTime;
-		pauseText.innerHTML = "<br>PAVZA </br> Cas: "+pauseTime;
+		pauseText.innerHTML = "<br>PAUSE! </br>";
 		pauseText.style.display= 'inline';
 		speed=0;
 		pauseText.style.position = 'absolute';
 		pauseText.style.width = 200;
 		pauseText.style.height = 200;
-		pauseText.style.backgroundColor = "white";
+		pauseText.style.color = "white";
+		pauseText.style.backgroundColor = "transparent";
 		pauseText.style.top = window.innerHeight/2;
 		pauseText.style.left = window.innerWidth/2-100;
+		pauseText.style.textAlign="center";
+		pauseText.style.fontSize="30px";
 
 	}
 	else{
@@ -350,11 +356,14 @@ function end(){
 	if(playerObject.position.x>(END_X-10) && playerObject.position.x<(END_X+10) && playerObject.position.y>(END_Y-10) && playerObject.position.y<(END_Y+10)){
 			if(isEnd==0){
 				endTime=scoreTime;
-				pauseText.innerHTML = "<br>ZMAGA</br> Potreboval si: "+endTime+"s <br>Za novo igro pritisni R</br>";
+				pauseText.innerHTML = "<br>ZMAGA!!!!</br> Potreboval si: "+endTime+"s <br></br><br>Za novo igro pritisni R</br>";
 				pauseText.style.display= 'inline';
+				pauseText.style.color="white";
 				pauseText.style.width = 400;
 				pauseText.style.height = 400;
-				pauseText.style.backgroundColor = "red";
+				pauseText.style.textAlign="center";
+				pauseText.style.fontSize="20px";
+				pauseText.style.backgroundColor = "transparent";
 				pauseText.style.top = window.innerHeight/2-200;
 				pauseText.style.left = window.innerWidth/2-200;
 				pauseTime=scoreTime;
