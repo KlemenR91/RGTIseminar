@@ -77,7 +77,7 @@ function initialize() {
 	//setting up scene
 	//scena,...
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+	camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize( window.innerWidth, window.innerHeight);
@@ -98,7 +98,7 @@ function initialize() {
 	setBackground(backgroundFilePath);
 
 	playerObject.add(camera);		// za TEST - potrebna izboljsava
-	camera.position.z = 15;
+	camera.position.z = 50;
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
 	playerObject.rays=[
@@ -220,12 +220,15 @@ function handleKeys() {
 			// Up cursor key
 			speed = 0.4;								//TEST
 			engineActive = 1;
+			engineOn = 1;
 		} else if (activeKeys["backward"] == 1) {
 			// Down cursor key
 			speed = -0.4;
 			engineActive = 1;
 		} else {
-			speed = 0.1;
+			if (engineOn == 1) {
+				speed = (speed * 0.5);
+			} else speed = 0.0;
 			engineActive = 0;
 		}
 	}
