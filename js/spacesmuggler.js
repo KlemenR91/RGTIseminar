@@ -1,3 +1,6 @@
+Physijs.scripts.worker = 'js/physijs_worker.js';
+Physijs.scripts.ammo = 'ammo.js';
+
 var MAX_SPEED = 1.0;
 var MIN_SPEED = -1.0;
 var TURN_FACTOR = 0.03;
@@ -81,7 +84,8 @@ var resourceCounter = 0;
 function initialize() {
 	//setting up scene
 	//scena,...
-	scene = new THREE.Scene();
+	scene = new Physijs.Scene;
+	//scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
 	renderer = new THREE.WebGLRenderer();
@@ -301,7 +305,7 @@ function moveAndRotate() {
 		playerObject.rotation.copy(playerObjRotation);
 		playerObject.translateY(speed);
 		playerObject.rotation.copy(curRotation);
-		console.log("opa");
+		//console.log("opa");
 	}
 
 	// if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
@@ -414,7 +418,7 @@ function end(){
 
 function createBoundaries() {
 	var material = new THREE.LineBasicMaterial({
-		color: 0xffffff
+		color: 0x000000
 	});
 
 	var geometry = new THREE.Geometry();
