@@ -89,7 +89,7 @@ function initialize() {
 	//renderer.setSize( 960, 540);
 	document.body.appendChild( renderer.domElement );
 
-	 //objekt
+	//objekt
 	var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 	var material = new THREE.MeshBasicMaterial( { color: 0x0021f0 } );
 
@@ -107,14 +107,14 @@ function initialize() {
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
 	playerObject.rays=[
-		new THREE.Vector3(0, 0, 1),
-		new THREE.Vector3(1, 0, 1),
-		new THREE.Vector3(1, 0, 0),
-		new THREE.Vector3(1, 0, -1),
-		new THREE.Vector3(0, 0, -1),
-		new THREE.Vector3(-1, 0, -1),
-		new THREE.Vector3(-1, 0, 0),
-		new THREE.Vector3(-1, 0, 1)
+	new THREE.Vector3(0, 0, 1),
+	new THREE.Vector3(1, 0, 1),
+	new THREE.Vector3(1, 0, 0),
+	new THREE.Vector3(1, 0, -1),
+	new THREE.Vector3(0, 0, -1),
+	new THREE.Vector3(-1, 0, -1),
+	new THREE.Vector3(-1, 0, 0),
+	new THREE.Vector3(-1, 0, 1)
 	];
 	playerObject.caster=new THREE.Raycaster();
 }
@@ -149,7 +149,7 @@ function loadTextures() {
 		var texture = THREE.ImageUtils.loadTexture(asteroidTexturesPaths[i]);
 		asteroidTextures.push(texture);
 	}
-	
+
 }
 
 //map for input values
@@ -354,8 +354,8 @@ function pause(){
 function drawHUD(){
 	var lastTime= new Date().getTime();
 	if (secondTime < lastTime) {
-			scoreTime=scoreTime+1;
-			secondTime=secondTime+1000;
+		scoreTime=scoreTime+1;
+		secondTime=secondTime+1000;
 	}
 	var a=playerObject.position.x;
 	if(pauseCheck<0){
@@ -391,23 +391,23 @@ function restart(){
 
 function end(){
 	if(playerObject.position.x>(END_X-1) && playerObject.position.x<(END_X+1) && playerObject.position.y>(END_Y-1) && playerObject.position.y<(END_Y+1)){
-			if(isEnd==0){
-				endTime=scoreTime;
-				pauseText.innerHTML = "<br>ZMAGA!!!!</br> Potreboval si: "+endTime+"s <br></br><br>Za novo igro pritisni R</br>";
-				pauseText.style.display= 'inline';
-				pauseText.style.color="white";
-				pauseText.style.width = 400;
-				pauseText.style.height = 400;
-				pauseText.style.textAlign="center";
-				pauseText.style.fontSize="20px";
-				pauseText.style.backgroundColor = "transparent";
-				pauseText.style.top = window.innerHeight/2-200;
-				pauseText.style.left = window.innerWidth/2-200;
-				pauseTime=scoreTime;
-				pauseCheck=1;
-				speed=0;
-				isEnd=1;
-			}
+		if(isEnd==0){
+			endTime=scoreTime;
+			pauseText.innerHTML = "<br>ZMAGA!!!!</br> Potreboval si: "+endTime+"s <br></br><br>Za novo igro pritisni R</br>";
+			pauseText.style.display= 'inline';
+			pauseText.style.color="white";
+			pauseText.style.width = 400;
+			pauseText.style.height = 400;
+			pauseText.style.textAlign="center";
+			pauseText.style.fontSize="20px";
+			pauseText.style.backgroundColor = "transparent";
+			pauseText.style.top = window.innerHeight/2-200;
+			pauseText.style.left = window.innerWidth/2-200;
+			pauseTime=scoreTime;
+			pauseCheck=1;
+			speed=0;
+			isEnd=1;
+		}
 	}
 }
 function createBoundary() {
