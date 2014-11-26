@@ -1,6 +1,7 @@
 var MAX_SPEED = 1.0;
 var MIN_SPEED = -1.0;
 var TURN_FACTOR = 0.03;
+var FREE_FLOW_SPEED = 0.2;
 
 //obmocje kjer se lahko premikamo
 var MAX_Y=40;
@@ -64,7 +65,8 @@ var secondTime=new Date().getTime();+1000;
 var boundaries = [];
 var asteroids = [];
 
-var asteroidTextures = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
+var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
+var asteroidTextures = [];
 var level1_asteroidCoords = [[10, 20], [10, 25], [20, 20]]	//x, y
 
 var playerObjRotation = 0;
@@ -72,6 +74,9 @@ var engineActive = 0;
 var engineOn = 0;
 var goal;
 var collisionDetected=0;
+
+var TOTAL_RESOURCES = 3;
+var resourceCounter = 0;
 
 function initialize() {
 	//setting up scene
@@ -138,6 +143,14 @@ function setBackground(path) {
 
 }
 
+function loadTextures() {
+	//load asteroid textures
+	for (var i = 0; i < asteroidTexturesPaths.length; i++) {
+		var texture = THREE.ImageUtils.loadTexture(asteroidTexturesPaths[i]);
+		asteroidTextures.push(texture);
+	}
+	
+}
 
 //map for input values
 var activeKeys = {};
@@ -227,7 +240,9 @@ function handleKeys() {
 			engineActive = 1;
 		} else {
 			if (engineOn == 1) {
-				speed = (speed * 0.5);
+				if(speed < 0) {		//check if the ship is moving forward
+					speed = - FREE_FLOW_SPEED;
+				} else speed = FREE_FLOW_SPEED;
 			} else speed = 0.0;
 			engineActive = 0;
 		}
@@ -277,32 +292,15 @@ function moveAndRotate() {
 		speed = MIN_SPEED;
 	}
 
-	//moveForward += speed;
-	//playerObject.position.x += moveForward * 0.01;
-
-	//playerObject.rotation.z += rotate;
-	//playerObject.position
-
-	//move player object
-	//playerObject.translateY(speed);
-	/*
-	var matrix = new THREE.Matrix4();
-	matrix.extractRotation( playerObject.matrix );
-
-	var direction = new THREE.Vector3(1, 0, 0);
-	direction = matrix.multiplyVector3(direction);
-
-	playerObject.translateOnAxis(direction, speed);
-	*/
-
 	if (engineActive == 1) {
 		playerObject.translateY(speed);
 		playerObjRotation = playerObject.rotation.clone();
-	} else {
+	} else if (engineActive == 0) {
 		var curRotation = playerObject.rotation.clone();	//bi bilo bolje kar v world matrix???
 		playerObject.rotation.copy(playerObjRotation);
 		playerObject.translateY(speed);
 		playerObject.rotation.copy(curRotation);
+		console.log("opa");
 	}
 
 	if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
@@ -387,6 +385,7 @@ function restart(){
 	scoreTime=0;
 	pauseTime=0;
 	isEnd=0;
+	engineOn = 0;
 
 }
 
@@ -425,7 +424,8 @@ function createAsteroid() {
 	var p = Math.round(Math.random() * (asteroidTextures.length - 1));
 
 	var geom = new THREE.SphereGeometry(4, 8, 8);
-	var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
+	//var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
+	var texture = asteroidTextures[p];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 
 	var aster = new THREE.Mesh( geom, mat );
@@ -496,6 +496,7 @@ var render = function () {
 
 function startGame() {
 	initialize();
+	loadTextures();
 
 	placeAsteroids();
 	placeGoal();
