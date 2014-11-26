@@ -50,7 +50,7 @@ pauseText.style.backgroundColor = "transparent";
 //SCORE
 var scoreText = document.createElement('div');
 scoreText.style.position = 'absolute';
-scoreText.style.width = 70;
+scoreText.style.width = 100;
 scoreText.style.height = 20;
 scoreText.style.backgroundColor = "white";
 scoreText.style.top = 10;
@@ -67,7 +67,7 @@ var asteroids = [];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
-var level1_asteroidCoords = [[10, 20], [10, 25], [20, 20]]	//x, y
+var level1_asteroidCoords = [[10, 30], [15, 25], [0, 20]]	//x, y
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -264,6 +264,7 @@ function checkCollision(){
 	var i;
 	var distance = 1;
 	var obstacles = asteroids;
+	obstacles=obstacles.concat(boundaries);
 	for(i=0;i < playerObject.rays.length; i++){
 		playerObject.caster.set(playerObject.position, playerObject.rays[i]);
 		collisions=playerObject.caster.intersectObjects(obstacles);
@@ -303,9 +304,9 @@ function moveAndRotate() {
 		console.log("opa");
 	}
 
-	if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
-		playerObject.translateY((-1)*speed);
-	}
+	// if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
+	// 	playerObject.translateY((-1)*speed);
+	// }
 
 
 	if (turn != 0) {
@@ -313,8 +314,8 @@ function moveAndRotate() {
 	}
 	checkCollision();
 	if(collisionDetected==1){
-		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*3;
-		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*3;
+		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
+		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*20;
 	}
 	collisionDetected=0;
 }
@@ -410,14 +411,51 @@ function end(){
 		}
 	}
 }
-function createBoundary() {
 
+function createBoundaries() {
+	var material = new THREE.LineBasicMaterial({
+		color: 0xffffff
+	});
+
+	var geometry = new THREE.Geometry();
+	geometry.vertices.push(
+		new THREE.Vector3( MIN_X, MIN_Y, 0 ),
+		new THREE.Vector3( MIN_X, MAX_Y, 0 )
+	);
+	var line = new THREE.Line( geometry, material );
+	boundaries.push(line);
+	scene.add( line );
+
+
+	geometry = new THREE.Geometry();
+	geometry.vertices.push(
+		new THREE.Vector3( MIN_X, MAX_Y, 0 ),
+		new THREE.Vector3( MAX_X, MAX_Y, 0 )
+	);
+	var line = new THREE.Line( geometry, material );
+	boundaries.push(line);
+	scene.add( line );
+
+
+	geometry.vertices.push(
+		new THREE.Vector3( MAX_X, MAX_Y, 0 ),
+		new THREE.Vector3( MAX_X, MIN_Y, 0 )
+	);
+
+	var line = new THREE.Line( geometry, material );
+	boundaries.push(line);
+	scene.add( line );
+
+
+	geometry.vertices.push(
+		new THREE.Vector3( MAX_X, MIN_Y, 0 ),
+		new THREE.Vector3( MIN_X, MIN_Y, 0 )
+	);
+
+	var line = new THREE.Line( geometry, material );
+	boundaries.push(line);
+	scene.add( line );
 }
-
-function placeBoundaries() {
-
-}
-
 
 
 function createAsteroid() {
@@ -499,6 +537,7 @@ function startGame() {
 	loadTextures();
 
 	placeAsteroids();
+	createBoundaries();
 	placeGoal();
 	render();
 }
