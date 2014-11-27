@@ -49,6 +49,7 @@ document.body.appendChild(pauseText);
 pauseText.style.display= 'none';
 pauseText.style.backgroundColor = "transparent";
 
+var score = 0;
 
 //SCORE
 var scoreText = document.createElement('div');
@@ -157,6 +158,8 @@ function initialize() {
 
 	playerObject.caster=new THREE.Raycaster();
 	//scene.simulate();
+	
+	playerObject.addEventListener( 'collision', playerCollided);
 }
 
 function setBackground(path) {
@@ -314,6 +317,17 @@ function checkCollision(){
 	}
 }
 
+
+function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
+    // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
+	//playerObject.setPosition(0,0,0);
+	playerObject.translateY(-30);
+	playerObject.__dirtyPosition = true;
+	engineOn = 0;
+	console.log("trk");
+	score -= 100;
+}
+
 function resetMovementVars() {
 
 	moveForward = 0.0;
@@ -335,12 +349,14 @@ function moveAndRotate() {
 
 	if (engineActive == 1) {
 		playerObject.translateY(speed);
+		//playerObject.setLinearVelocity({ x: speed * 10, y: 0, z: 0 });
 		playerObjRotation = playerObject.rotation.clone();
 		playerObject.__dirtyPosition = true;
 	} else if (engineActive == 0) {
 		var curRotation = playerObject.rotation.clone();	//bi bilo bolje kar v world matrix???
 		playerObject.rotation.copy(playerObjRotation);
 		playerObject.translateY(speed);
+		//playerObject.setLinearVelocity({ x: speed, y: speed, z: 0 });
 		playerObject.rotation.copy(curRotation);
 		//console.log("opa");
 		playerObject.__dirtyPosition = true;
@@ -355,13 +371,13 @@ function moveAndRotate() {
 		playerObject.rotation.z += turn;
 		playerObject.__dirtyRotation = true;
 	}
-	checkCollision();
-	if(collisionDetected==1){
-		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
-		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*20;
-		engineOn=0;
-	}
-	collisionDetected=0;
+//	checkCollision();
+//	if(collisionDetected==1){
+//		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
+//		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*20;
+//		engineOn=0;
+//	}
+//	collisionDetected=0;
 }
 function startPosition(){
 	playerObject.position.set(START_X,START_Y,0);
