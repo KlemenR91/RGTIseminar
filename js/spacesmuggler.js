@@ -70,7 +70,7 @@ var asteroids = [];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
-var level1_asteroidCoords = [[0,0], [15, 25], [50, 20]]	//x, y
+var level1_asteroidCoords = [[7,7], [15, 25], [50, 20]]	//x, y
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -85,7 +85,7 @@ function initialize() {
 	//setting up scene
 	//scena,...
 	scene = new Physijs.Scene;
-	scene.setGravity(new THREE.Vector3( 0, 0, -30 ));
+	scene.setGravity(new THREE.Vector3( 0, 0, 0 ));
 	scene.addEventListener('update',function(){
 		scene.simulate();
 	});
@@ -134,7 +134,7 @@ function initialize() {
 	// scene.add(ground);
 
 	///END
-	playerObject = new Physijs.BoxMesh( geometry, material );
+	playerObject = new Physijs.BoxMesh( geometry, material, 100 );
 	scene.add( playerObject );
 
 	var backgroundFilePath = "res/stardust-1920x1080.png";
@@ -507,7 +507,10 @@ function createAsteroid() {
 	var texture = asteroidTextures[p];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 
-	var aster = new Physijs.SphereMesh( geom, mat );
+	var aster = new Physijs.SphereMesh( geom, mat,0 );
+	//var vec = new THREE.vector
+	//aster.setAngularFactor(new THREE.Vector3(0,0,0));
+	//aster.setLinearFactor(new THREE.Vector3(0,0,0));
 	return aster;
 }
 
@@ -542,6 +545,7 @@ var render = function () {
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
 	requestAnimationFrame(render);
+	scene.simulate();
 	drawHUD();
 	end();
 	handleInput();
