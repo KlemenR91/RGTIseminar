@@ -17,8 +17,8 @@ var START_X=-60;
 var START_Y=0;
 
 //CILJ
-var END_X=0;
-var END_Y=0;
+var END_X=20;
+var END_Y=10;
 //Ali je konec
 isEnd=0;
 //Koncni cas
@@ -70,7 +70,7 @@ var asteroids = [];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
-var level1_asteroidCoords = [[10, 30], [15, 25], [0, 20]]	//x, y
+var level1_asteroidCoords = [[0,0], [15, 25], [50, 20]]	//x, y
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -85,6 +85,10 @@ function initialize() {
 	//setting up scene
 	//scena,...
 	scene = new Physijs.Scene;
+	scene.setGravity(new THREE.Vector3( 0, 0, -30 ));
+	scene.addEventListener('update',function(){
+		scene.simulate();
+	});
 	//scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera( 45, window.innerWidth/window.innerHeight, 0.1, 1000 );
 
@@ -97,10 +101,40 @@ function initialize() {
 	var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 	var material = new THREE.MeshBasicMaterial( { color: 0x0021f0 } );
 
+
+ ///BOX
+	var box=new Physijs.BoxMesh(
+		new THREE.BoxGeometry(5,5,5),
+		new THREE.MeshBasicMaterial({color: 0x888888})
+	);
+	box.position.set(-10,-10,0);
+	scene.add(box);
+
+
+ ///END BOX
 	//var cube = new THREE.Mesh( geometry, material );
 	//scene.add( cube );
 	//celoten objekt
-	playerObject = new THREE.Mesh( geometry, material );
+
+	///GROUND
+	// var ground_material = Physijs.createMaterial(
+	// 	new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture( 'res/stardust-1920x1080.png' ) }),
+	// 	.8, // high friction
+	// 	.3 // low restitution
+	// );
+	// ground_material.map.wrapS = ground_material.map.wrapT = THREE.RepeatWrapping;
+	// ground_material.map.repeat.set( 3, 3 );
+	//
+	// ground = new Physijs.BoxMesh(
+	// 	new THREE.BoxGeometry(100, 100, 1),
+	// 	ground_material,
+	// 	0 // mass
+	// );
+	// ground.position.set(0,0,0);
+	// scene.add(ground);
+
+	///END
+	playerObject = new Physijs.BoxMesh( geometry, material );
 	scene.add( playerObject );
 
 	var backgroundFilePath = "res/stardust-1920x1080.png";
@@ -120,7 +154,9 @@ function initialize() {
 	new THREE.Vector3(-1, 0, 0),
 	new THREE.Vector3(-1, 0, 1)
 	];
+
 	playerObject.caster=new THREE.Raycaster();
+	//scene.simulate();
 }
 
 function setBackground(path) {
@@ -320,6 +356,7 @@ function moveAndRotate() {
 	if(collisionDetected==1){
 		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
 		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*20;
+		engineOn=0;
 	}
 	collisionDetected=0;
 }
@@ -418,7 +455,7 @@ function end(){
 
 function createBoundaries() {
 	var material = new THREE.LineBasicMaterial({
-		color: 0x000000
+		color: 0xffffff
 	});
 
 	var geometry = new THREE.Geometry();
@@ -470,7 +507,7 @@ function createAsteroid() {
 	var texture = asteroidTextures[p];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 
-	var aster = new THREE.Mesh( geom, mat );
+	var aster = new Physijs.SphereMesh( geom, mat );
 	return aster;
 }
 
@@ -483,6 +520,7 @@ function placeAsteroids() {
 	}
 
 }
+
 
 function placeGoal() {
 	var geom = new THREE.BoxGeometry(2, 2, 2);
@@ -501,7 +539,8 @@ document.onkeyup = handleKeyUp;
 
 var render = function () {
 	//testing(playerObject.position.x);
-
+	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
+	//scene.simulate();
 	requestAnimationFrame(render);
 	drawHUD();
 	end();
