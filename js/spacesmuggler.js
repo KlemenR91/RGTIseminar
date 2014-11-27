@@ -336,12 +336,14 @@ function moveAndRotate() {
 	if (engineActive == 1) {
 		playerObject.translateY(speed);
 		playerObjRotation = playerObject.rotation.clone();
+		playerObject.__dirtyPosition = true;
 	} else if (engineActive == 0) {
 		var curRotation = playerObject.rotation.clone();	//bi bilo bolje kar v world matrix???
 		playerObject.rotation.copy(playerObjRotation);
 		playerObject.translateY(speed);
 		playerObject.rotation.copy(curRotation);
 		//console.log("opa");
+		playerObject.__dirtyPosition = true;
 	}
 
 	// if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
@@ -351,6 +353,7 @@ function moveAndRotate() {
 
 	if (turn != 0) {
 		playerObject.rotation.z += turn;
+		playerObject.__dirtyRotation = true;
 	}
 	checkCollision();
 	if(collisionDetected==1){
