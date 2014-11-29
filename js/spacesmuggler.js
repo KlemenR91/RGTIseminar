@@ -7,18 +7,18 @@ var TURN_FACTOR = 0.03;
 var FREE_FLOW_SPEED = 0.2;
 
 //obmocje kjer se lahko premikamo
-var MAX_Y=200;
-var MAX_X=300;
-var MIN_Y=-200;
-var MIN_X=-300;
+var MAX_Y=100;
+var MAX_X=150;
+var MIN_Y=-100;
+var MIN_X=-150;
 
 //ZACETEK
-var START_X=-60;
+var START_X=-140;
 var START_Y=0;
 
 //CILJ
-var END_X=20;
-var END_Y=10;
+var END_X=280;
+var END_Y=180;
 //Ali je konec
 isEnd=0;
 //Koncni cas
@@ -68,13 +68,15 @@ var secondTime=new Date().getTime();+1000;
 
 var boundaries = [];
 var asteroids = [];
+var bonus = [];
 var level1Obstacles = [];
 
 var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
-var level1_asteroidCoords = [[7,7], [15, 25], [50, 20], [18, 28], [15, 14], [26, 26]]	//x, y
+var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26]]	//x, y
+var level1_bonusCoords = [[-135,20]]
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
 var obstacleTextures = [];
@@ -374,16 +376,17 @@ function checkCollision(){
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
 	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
 	//playerObject.setPosition(0,0,0);
-	playerObject.translateY(-10);
-	playerObject.__dirtyPosition = true;
-	engineOn = 0;
-	console.log("trk");
-	score -= 100;
-	playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
-	playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
-	playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
+	
+		playerObject.translateY(-10);
+		playerObject.__dirtyPosition = true;
+		engineOn = 0;
+		console.log("trk");
+		score -= 100;
+		playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
+		playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
+		playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
 
-	console.log(contact_normal);
+		console.log(contact_normal);
 }
 
 
@@ -637,6 +640,27 @@ function createBoundaries() {
 	// scene.add( line );
 }
 
+function createBonus() {
+	var geom = new THREE.SphereGeometry(1, 8, 8);
+	//var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
+	var mat = new THREE.MeshBasicMaterial({ color: 0x00ff00,transparent: true, opacity: 0.2 });
+
+	var aster = new Physijs.SphereMesh( geom, mat, 0 );
+	//var vec = new THREE.vector
+	//aster.setAngularFactor(new THREE.Vector3(0,0,0));
+	//aster.setLinearFactor(new THREE.Vector3(0,0,0));
+	return aster;
+}
+
+function placeBonus() {
+	for (var i = 0; i < level1_bonusCoords.length; i++) {
+		var currentBonus = createBonus();
+		currentBonus.position.set(level1_bonusCoords[i][0], level1_bonusCoords[i][1], 0);
+		bonus.push(currentBonus);
+		scene.add(currentBonus);
+	}
+
+}
 
 function createAsteroid() {
 	var p = Math.round(Math.random() * (asteroidTextures.length - 1));
@@ -665,7 +689,7 @@ function placeAsteroids() {
 
 
 function createObstacle(texIndex) {
-	var geom = new THREE.CylinderGeometry( 0.5, 0.7, 220, 32 );
+	var geom = new THREE.CylinderGeometry( 0.5, 0.5, 200, 32 );
 	var texture = laserTextures[obstacleTexIndex[texIndex]];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
@@ -690,7 +714,7 @@ function placeObstacles() {
 
 
 function placeGoal() {
-	var geom = new THREE.BoxGeometry(2, 2, 2);
+	var geom = new THREE.BoxGeometry(4, 4, 4);
 	var texture = THREE.ImageUtils.loadTexture("res/goalTexture.png");
 
 	goalMat = new THREE.MeshBasicMaterial({ map : texture });
@@ -750,6 +774,7 @@ function startGame() {
 
 	placeAsteroids();
 	placeObstacles();
+	placeBonus();
 
 	createBoundaries();
 	placeGoal();
