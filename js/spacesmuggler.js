@@ -7,10 +7,10 @@ var TURN_FACTOR = 0.03;
 var FREE_FLOW_SPEED = 0.2;
 
 //obmocje kjer se lahko premikamo
-var MAX_Y=40;
-var MAX_X=75;
-var MIN_Y=-40;
-var MIN_X=-75;
+var MAX_Y=200;
+var MAX_X=300;
+var MIN_Y=-200;
+var MIN_X=-300;
 
 //ZACETEK
 var START_X=-60;
@@ -69,6 +69,8 @@ var secondTime=new Date().getTime();+1000;
 var boundaries = [];
 var asteroids = [];
 var level1Obstacles = [];
+
+var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
@@ -184,13 +186,13 @@ function setBackground(path) {
 	THREE.ImageUtils.crossOrigin = '';
 	backgroundTexture = THREE.ImageUtils.loadTexture(path);
 	// assuming you want the texture to repeat in both directions:
-	backgroundTexture.wrapS = THREE.MirroredRepeatWrapping;
-	backgroundTexture.wrapT = THREE.MirroredRepeatWrapping;
+	//backgroundTexture.wrapS = THREE.MirroredRepeatWrapping;
+	//backgroundTexture.wrapT = THREE.MirroredRepeatWrapping;
 	// how many times to repeat in each direction; the default is (1,1)
-	backgroundTexture.repeat.set( 1, 1 );
+	//backgroundTexture.repeat.set( 1, 1 );
 
 	backgroundMaterial = new THREE.MeshBasicMaterial({ map : backgroundTexture });
-	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(600, 400), backgroundMaterial);
+	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(MAX_X*2, MAX_Y*2), backgroundMaterial);
 	//backgroundPlane.material.side = THREE.DoubleSide;
 	//backgroundPlane.position.x = 10;
 	//backgroundPlane.position.y += 10;
@@ -554,48 +556,85 @@ function end(){
 }
 
 function createBoundaries() {
-	var material = new THREE.LineBasicMaterial({
-		color: 0xffffff
-	});
-
-	var geometry = new THREE.Geometry();
-	geometry.vertices.push(
-		new THREE.Vector3( MIN_X, MIN_Y, 0 ),
-		new THREE.Vector3( MIN_X, MAX_Y, 0 )
+	var textureX = THREE.ImageUtils.loadTexture(boundaryTexture[0]);
+	var textureY = THREE.ImageUtils.loadTexture(boundaryTexture[1]);
+	textureX.wrapS = THREE.MirroredRepeatWrapping;
+	textureX.wrapT = THREE.MirroredRepeatWrapping;
+	textureX.repeat.set( 1, 1 );
+	textureY.wrapS = THREE.MirroredRepeatWrapping;
+	textureY.wrapT = THREE.MirroredRepeatWrapping;
+	textureY.repeat.set( 1, 1 );
+	// how many times to repeat in each direction; the default is (1,1)
+	var box1=new Physijs.BoxMesh(
+		new THREE.BoxGeometry(0.01,MAX_Y*2,4),
+		new THREE.MeshBasicMaterial({map: textureX}),
+		0
 	);
-	var line = new THREE.Line( geometry, material );
-	boundaries.push(line);
-	scene.add( line );
-
-
-	geometry = new THREE.Geometry();
-	geometry.vertices.push(
-		new THREE.Vector3( MIN_X, MAX_Y, 0 ),
-		new THREE.Vector3( MAX_X, MAX_Y, 0 )
+	var box2=new Physijs.BoxMesh(
+		new THREE.BoxGeometry(0.01,MAX_Y*2,4),
+		new THREE.MeshBasicMaterial({map: textureX}),
+		0
 	);
-	var line = new THREE.Line( geometry, material );
-	boundaries.push(line);
-	scene.add( line );
-
-
-	geometry.vertices.push(
-		new THREE.Vector3( MAX_X, MAX_Y, 0 ),
-		new THREE.Vector3( MAX_X, MIN_Y, 0 )
+	var box3=new Physijs.BoxMesh(
+		new THREE.BoxGeometry(MAX_X*2,0.01,4),
+		new THREE.MeshBasicMaterial({map: textureY}),
+		0
 	);
-
-	var line = new THREE.Line( geometry, material );
-	boundaries.push(line);
-	scene.add( line );
-
-
-	geometry.vertices.push(
-		new THREE.Vector3( MAX_X, MIN_Y, 0 ),
-		new THREE.Vector3( MIN_X, MIN_Y, 0 )
+	var box4=new Physijs.BoxMesh(
+		new THREE.BoxGeometry(MAX_X*2,0.01,4),
+		new THREE.MeshBasicMaterial({map: textureY}),
+		0
 	);
-
-	var line = new THREE.Line( geometry, material );
-	boundaries.push(line);
-	scene.add( line );
+	box1.position.set(MIN_X,0,0);
+	scene.add(box1);
+	box2.position.set(MAX_X,0,0);
+	scene.add(box2);
+	box3.position.set(0,MIN_Y,0);
+	scene.add(box3);
+	box4.position.set(0,MAX_Y,0);
+	scene.add(box4);
+	// var material = new THREE.LineBasicMaterial({
+	// 	color: 0xffffff
+	// });
+	//
+	// var geometry = new THREE.Geometry();
+	// geometry.vertices.push(
+	// 	new THREE.Vector3( MIN_X, MIN_Y, 0 ),
+	// 	new THREE.Vector3( MIN_X, MAX_Y, 0 )
+	// );
+	// var line = new THREE.Line( geometry, material );
+	// boundaries.push(line);
+	// scene.add( line );
+	//
+	//
+	// geometry = new THREE.Geometry();
+	// geometry.vertices.push(
+	// 	new THREE.Vector3( MIN_X, MAX_Y, 0 ),
+	// 	new THREE.Vector3( MAX_X, MAX_Y, 0 )
+	// );
+	// var line = new THREE.Line( geometry, material );
+	// boundaries.push(line);
+	// scene.add( line );
+	//
+	//
+	// geometry.vertices.push(
+	// 	new THREE.Vector3( MAX_X, MAX_Y, 0 ),
+	// 	new THREE.Vector3( MAX_X, MIN_Y, 0 )
+	// );
+	//
+	// var line = new THREE.Line( geometry, material );
+	// boundaries.push(line);
+	// scene.add( line );
+	//
+	//
+	// geometry.vertices.push(
+	// 	new THREE.Vector3( MAX_X, MIN_Y, 0 ),
+	// 	new THREE.Vector3( MIN_X, MIN_Y, 0 )
+	// );
+	//
+	// var line = new THREE.Line( geometry, material );
+	// boundaries.push(line);
+	// scene.add( line );
 }
 
 
