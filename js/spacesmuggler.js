@@ -77,7 +77,8 @@ var level1_asteroidCoords = [[7,7], [15, 25], [50, 20], [18, 28], [15, 14], [26,
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
 var obstacleTextures = [];
 
-var laserTexturePaths = [""];
+var laserTexturesPaths = ["res/laser1b.png", "res/laser1.png"];
+var laserTextures = [];
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -89,8 +90,8 @@ var TOTAL_RESOURCES = 3;
 var resourceCounter = 0;
 
 var shipZPos = 0;
-var TOP_Z_POS = 1;
-var LOW_Z_POS = -1;
+var TOP_Z_POS = 2;
+var LOW_Z_POS = -2;
 var dimensionShiftLocked = false;
 
 var lasers = [];
@@ -210,6 +211,12 @@ function loadTextures() {
 	for (var i = 0; i < obstacleTexturesPaths.length; i++) {
 		var texture = THREE.ImageUtils.loadTexture(obstacleTexturesPaths[i]);
 		obstacleTextures.push(texture);
+	}
+	
+	//load laser texture
+	for (var i = 0; i < laserTexturesPaths.length; i++) {
+		var texture = THREE.ImageUtils.loadTexture(laserTexturesPaths[i]);
+		laserTextures.push(texture);
 	}
 	
 }
@@ -425,15 +432,16 @@ function moveAndRotate() {
 		if (activeKeys["dimensionUp"] == 1) {
 			if (shipZPos < TOP_Z_POS) {
 				dimensionShiftLocked = true;
-				shipZPos += 1;
-				playerObject.translateZ(1);
+				shipZPos += 2;
+				playerObject.translateZ(2);
 				playerObject.__dirtyPosition = true;
+				console.log("dim up");
 			}
 		} else if (activeKeys["dimensionDown"] == 1) {
 			if (shipZPos > LOW_Z_POS) {
 				dimensionShiftLocked = true;
-				shipZPos -= 1;
-				playerObject.translateZ(-1);
+				shipZPos -= 2;
+				playerObject.translateZ(-2);
 				playerObject.__dirtyPosition = true;
 				console.log("dim down");
 			}
@@ -617,12 +625,11 @@ function placeAsteroids() {
 
 function createObstacle() {
 	var geom = new THREE.CylinderGeometry( 0.5, 0.7, 220, 32 );
-	var texture = obstacleTextures[0];
+	var texture = laserTextures[0];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
 	
-	testing("ttt");
 	return obstacle;
 }
 
@@ -635,7 +642,8 @@ function placeObstacles() {
 		scene.add(currentAster);
 	} */
 	var currentObstacle = createObstacle();
-	currentObstacle.position.set(10, 10, -1)
+	currentObstacle.position.set(10, 10, -1);
+	currentObstacle.rotation.y += 0.785;
 	level1Obstacles.push(currentObstacle);
 	
 	scene.add(currentObstacle);
