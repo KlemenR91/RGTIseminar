@@ -91,8 +91,8 @@ var laserTextures = [];
 
 var wallTexturesPaths = ["res/metallic-texture-small.jpg"];
 var wallTextures = [];
-var level1_wallCoords = [[10, 75, 0], [10, 0, 0], [10, -75, 0]]	//x, y, z
-var level1_wallValues = [[5, 50, 8], [2, 50, 8], [2, 50, 8]]	//width (x), height(y), depth(z)
+var level1_wallCoords = [[10, 75, 0], [10, 0, 0], [10, -75, 0], [37.5, 22.5, 0], [65, 60, 0], [42, -55, 0]];	//x, y, z
+var level1_wallValues = [[5, 50, 8], [5, 50, 8], [5, 50, 8], [50, 5, 8], [5, 80, 8], [67, 20 ,8]];	//width (x), height(y), depth(z)
 // var laserObstacleTexIndex = [0, 0, 0]
 
 
@@ -730,7 +730,7 @@ function createLaserObstacle(texIndex) {
 
 function createWall(texIndex, width, height, depth) {
 	var geom = new THREE.BoxGeometry(width, height, depth);
-	var texture = obstacleTextures[obstacleTexIndex[texIndex]];
+	var texture = wallTextures[0];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
