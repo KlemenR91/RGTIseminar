@@ -116,7 +116,7 @@ function initialize() {
 	var material = new THREE.MeshBasicMaterial( { color: 0x0021f0 } );
 
 
- ///BOX
+	///BOX
 	var box=new Physijs.BoxMesh(
 		new THREE.BoxGeometry(5,5,5),
 		new THREE.MeshBasicMaterial({color: 0x888888})
@@ -125,7 +125,7 @@ function initialize() {
 	scene.add(box);
 
 
- ///END BOX
+	///END BOX
 	//var cube = new THREE.Mesh( geometry, material );
 	//scene.add( cube );
 	//celoten objekt
@@ -171,7 +171,7 @@ function initialize() {
 
 	playerObject.caster=new THREE.Raycaster();
 	//scene.simulate();
-	
+
 	playerObject.addEventListener( 'collision', playerCollided);
 }
 
@@ -328,7 +328,7 @@ function handleKeys() {
 			engineActive = 0;
 		}
 	}
-	
+
 	if (activeKeys["dimensionUp"] == 0 && activeKeys["dimensionDown"] == 0) {
 		dimensionShiftLocked = false;
 	}
@@ -361,7 +361,7 @@ function checkCollision(){
 
 
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
-    // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
+	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
 	//playerObject.setPosition(0,0,0);
 	playerObject.translateY(-10);
 	playerObject.__dirtyPosition = true;
@@ -371,7 +371,7 @@ function playerCollided( other_object, relative_velocity, relative_rotation, con
 	playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
 	playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
 	playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
-	
+
 	console.log(contact_normal);
 }
 
@@ -420,7 +420,7 @@ function moveAndRotate() {
 		playerObject.rotation.z += turn;
 		playerObject.__dirtyRotation = true;
 	}
-	
+
 	if (dimensionShiftLocked == false) {		//check if dimension shift is not locked
 		if (activeKeys["dimensionUp"] == 1) {
 			if (shipZPos < TOP_Z_POS) {
@@ -439,15 +439,15 @@ function moveAndRotate() {
 			}
 		}
 	}
-	
-	
-//	checkCollision();
-//	if(collisionDetected==1){
-//		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
-//		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*20;
-//		engineOn=0;
-//	}
-//	collisionDetected=0;
+
+
+	//	checkCollision();
+	//	if(collisionDetected==1){
+	//		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
+	//		playerObject.position.y=playerObject.position.y-(playerObject.position.y-prevY)*20;
+	//		engineOn=0;
+	//	}
+	//	collisionDetected=0;
 }
 
 function startPosition(){
