@@ -68,10 +68,16 @@ var secondTime=new Date().getTime();+1000;
 
 var boundaries = [];
 var asteroids = [];
+var level1Obstacles = [];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
 var level1_asteroidCoords = [[7,7], [15, 25], [50, 20], [18, 28], [15, 14], [26, 26]]	//x, y
+
+var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
+var obstacleTextures = [];
+
+var laserTexturePaths = [""];
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -181,7 +187,7 @@ function setBackground(path) {
 	//backgroundTexture.repeat.set( 2, 2 );
 
 	backgroundMaterial = new THREE.MeshBasicMaterial({ map : backgroundTexture });
-	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(160, 90), backgroundMaterial);
+	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(400, 200), backgroundMaterial);
 	//backgroundPlane.material.side = THREE.DoubleSide;
 	//backgroundPlane.position.x = 10;
 	//backgroundPlane.position.y += 10;
@@ -199,7 +205,13 @@ function loadTextures() {
 		var texture = THREE.ImageUtils.loadTexture(asteroidTexturesPaths[i]);
 		asteroidTextures.push(texture);
 	}
-
+	
+	//load obstacle textures
+	for (var i = 0; i < obstacleTexturesPaths.length; i++) {
+		var texture = THREE.ImageUtils.loadTexture(obstacleTexturesPaths[i]);
+		obstacleTextures.push(texture);
+	}
+	
 }
 
 //map for input values
@@ -362,6 +374,8 @@ function playerCollided( other_object, relative_velocity, relative_rotation, con
 	
 	console.log(contact_normal);
 }
+
+
 
 function resetMovementVars() {
 
@@ -601,6 +615,34 @@ function placeAsteroids() {
 }
 
 
+function createObstacle() {
+	var geom = new THREE.CylinderGeometry( 0.5, 0.7, 220, 32 );
+	var texture = obstacleTextures[0];
+	var mat = new THREE.MeshBasicMaterial({ map : texture });
+	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
+	
+	testing("ttt");
+	return obstacle;
+}
+
+function placeObstacles() {
+	/*
+	for (var i = 0; i < level1_asteroidCoords.length; i++) {
+		var currentAster = createAsteroid();
+		currentAster.position.set(level1_asteroidCoords[i][0], level1_asteroidCoords[i][1], 0);
+		asteroids.push(currentAster);
+		scene.add(currentAster);
+	} */
+	var currentObstacle = createObstacle();
+	currentObstacle.position.set(10, 10, -1)
+	level1Obstacles.push(currentObstacle);
+	
+	scene.add(currentObstacle);
+}
+
+
+
 function placeGoal() {
 	var geom = new THREE.BoxGeometry(2, 2, 2);
 	var texture = THREE.ImageUtils.loadTexture("res/goalTexture.png");
@@ -660,6 +702,8 @@ function startGame() {
 	loadTextures();
 
 	placeAsteroids();
+	placeObstacles();
+	
 	createBoundaries();
 	placeGoal();
 	render();
