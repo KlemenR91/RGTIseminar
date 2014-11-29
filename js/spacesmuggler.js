@@ -71,7 +71,7 @@ var asteroids = [];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
-var level1_asteroidCoords = [[7,7], [15, 25], [50, 20]]	//x, y
+var level1_asteroidCoords = [[7,7], [15, 25], [50, 20], [18, 28], [15, 14], [26, 26]]	//x, y
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -81,6 +81,13 @@ var collisionDetected=0;
 
 var TOTAL_RESOURCES = 3;
 var resourceCounter = 0;
+
+var shipZPos = 0;
+var TOP_Z_POS = 1;
+var LOW_Z_POS = -1;
+var dimensionShiftLocked = false;
+
+var lasers = [];
 
 function initialize() {
 	//setting up scene
@@ -202,6 +209,9 @@ activeKeys["backward"] = 0;
 activeKeys["rotateLeft"] = 0;
 activeKeys["rotateRight"] = 0;
 activeKeys["pause"]=-1;
+activeKeys["dimensionUp"] = 0;
+activeKeys["dimensionDown"] = 0;
+
 var moveForward = 0.0;
 var moveBackward = 0.0;
 var turn = 0.0;
@@ -232,6 +242,14 @@ function handleKeyDown(event) {
 	if (event.keyCode == 80) {
 		pause();
 	}
+	if (event.keyCode == 16) {
+		//L Shift
+		activeKeys["dimensionUp"] = 1;
+	}
+	if (event.keyCode == 17) {
+		//L CTRL
+		activeKeys["dimensionDown"] = 1;
+	}
 
 }
 
@@ -256,6 +274,14 @@ function handleKeyUp(event) {
 	if (event.keyCode == 82) {
 		// Down cursor key
 		activeKeys["restart"] = 0;
+	}
+	if (event.keyCode == 16) {
+		//L Shift
+		activeKeys["dimensionUp"] = 0;
+	}
+	if (event.keyCode == 17) {
+		//L CTRL
+		activeKeys["dimensionDown"] = 0;
 	}
 }
 
@@ -290,6 +316,10 @@ function handleKeys() {
 			engineActive = 0;
 		}
 	}
+	
+	if (activeKeys["dimensionUp"] == 0 && activeKeys["dimensionDown"] == 0) {
+		dimensionShiftLocked = false;
+	}
 
 	//restart
 	if (activeKeys["restart"] == 1) {
@@ -321,11 +351,16 @@ function checkCollision(){
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
     // `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
 	//playerObject.setPosition(0,0,0);
-	playerObject.translateY(-30);
+	playerObject.translateY(-10);
 	playerObject.__dirtyPosition = true;
 	engineOn = 0;
 	console.log("trk");
 	score -= 100;
+	playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
+	playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
+	playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
+	
+	console.log(contact_normal);
 }
 
 function resetMovementVars() {
@@ -371,6 +406,27 @@ function moveAndRotate() {
 		playerObject.rotation.z += turn;
 		playerObject.__dirtyRotation = true;
 	}
+	
+	if (dimensionShiftLocked == false) {		//check if dimension shift is not locked
+		if (activeKeys["dimensionUp"] == 1) {
+			if (shipZPos < TOP_Z_POS) {
+				dimensionShiftLocked = true;
+				shipZPos += 1;
+				playerObject.translateZ(1);
+				playerObject.__dirtyPosition = true;
+			}
+		} else if (activeKeys["dimensionDown"] == 1) {
+			if (shipZPos > LOW_Z_POS) {
+				dimensionShiftLocked = true;
+				shipZPos -= 1;
+				playerObject.translateZ(-1);
+				playerObject.__dirtyPosition = true;
+				console.log("dim down");
+			}
+		}
+	}
+	
+	
 //	checkCollision();
 //	if(collisionDetected==1){
 //		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
@@ -379,6 +435,7 @@ function moveAndRotate() {
 //	}
 //	collisionDetected=0;
 }
+
 function startPosition(){
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
@@ -526,7 +583,7 @@ function createAsteroid() {
 	var texture = asteroidTextures[p];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 
-	var aster = new Physijs.SphereMesh( geom, mat,0 );
+	var aster = new Physijs.SphereMesh( geom, mat, 10 );
 	//var vec = new THREE.vector
 	//aster.setAngularFactor(new THREE.Vector3(0,0,0));
 	//aster.setLinearFactor(new THREE.Vector3(0,0,0));
