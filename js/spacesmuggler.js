@@ -82,7 +82,15 @@ var level1_obstacleCoords = [[10, 0, -2], [14, 0, 0], [18, 0, 2]]	//x, y, z
 var obstacleTexIndex = [0, 0, 0]
 
 var laserTexturesPaths = ["res/laser1b.png", "res/laser1.png"];
+var level1_laserObstacleCoords = [[-10, 0, -2], [-5, 0, 0], [0, 0, 2]]	//x, y, z
+var laserObstacleTexIndex = [0, 0, 0]
 var laserTextures = [];
+
+var wallTexturesPaths = ["res/metallic-texture-small.jpg"];
+var wallTextures = [];
+var level1_wallCoords = [[10, 75, 0], [10, 0, 0], [10, -75, 0]]	//x, y, z
+var level1_wallValues = [[5, 50, 8], [2, 50, 8], [2, 50, 8]]	//width (x), height(y), depth(z)
+// var laserObstacleTexIndex = [0, 0, 0]
 
 
 var playerObjRotation = 0;
@@ -217,10 +225,16 @@ function loadTextures() {
 		obstacleTextures.push(texture);
 	}
 
-	//load laser texture
+	//load laser textures
 	for (var i = 0; i < laserTexturesPaths.length; i++) {
 		var texture = THREE.ImageUtils.loadTexture(laserTexturesPaths[i]);
 		laserTextures.push(texture);
+	}
+	
+	//load wall textures
+	for (var i = 0; i < wallTexturesPaths.length; i++) {
+		var texture = THREE.ImageUtils.loadTexture(wallTexturesPaths[i]);
+		wallTextures.push(texture);
 	}
 
 }
@@ -666,7 +680,27 @@ function placeAsteroids() {
 
 function createObstacle(texIndex) {
 	var geom = new THREE.CylinderGeometry( 0.5, 0.7, 220, 32 );
-	var texture = laserTextures[obstacleTexIndex[texIndex]];
+	var texture = obstacleTextures[obstacleTexIndex[texIndex]];
+	var mat = new THREE.MeshBasicMaterial({ map : texture });
+	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
+
+	return obstacle;
+}
+
+function createLaserObstacle(texIndex) {
+	var geom = new THREE.CylinderGeometry( 0.5, 0.7, 220, 32 );
+	var texture = laserTextures[laserObstacleTexIndex[texIndex]];
+	var mat = new THREE.MeshBasicMaterial({ map : texture });
+	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
+	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
+
+	return obstacle;
+}
+
+function createWall(texIndex, width, height, depth) {
+	var geom = new THREE.BoxGeometry(width, height, depth);
+	var texture = obstacleTextures[obstacleTexIndex[texIndex]];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
@@ -675,9 +709,11 @@ function createObstacle(texIndex) {
 }
 
 function placeObstacles() {
-
+	
+	//place laser
+	/*
 	for (var i = 0; i < level1_obstacleCoords.length; i++) {
-		var currentObstacle = createObstacle(i);
+		var currentObstacle = createLaserObstacle(i);
 		//currentObstacle.position.set(10, 10, -1);
 		currentObstacle.position.set(level1_obstacleCoords[i][0], level1_obstacleCoords[i][1], level1_obstacleCoords[i][2]);
 		currentObstacle.rotation.y += 0.785;
@@ -685,8 +721,30 @@ function placeObstacles() {
 
 		scene.add(currentObstacle);
 	}
-}
+	*/
+	
+	//place laser obstacles
+	for (var i = 0; i < level1_laserObstacleCoords.length; i++) {
+		var currentObstacle = createLaserObstacle(i);
+		//currentObstacle.position.set(10, 10, -1);
+		currentObstacle.position.set(level1_laserObstacleCoords[i][0], level1_laserObstacleCoords[i][1], level1_laserObstacleCoords[i][2]);
+		currentObstacle.rotation.y += 0.785;
+		level1Obstacles.push(currentObstacle);
 
+		scene.add(currentObstacle);
+	}
+	
+	//place walls
+	for (var i = 0; i < level1_wallCoords.length; i++) {
+		var currentObstacle = createWall(i, level1_wallValues[i][0], level1_wallValues[i][1], level1_wallValues[i][2]);
+		currentObstacle.position.set(level1_wallCoords[i][0], level1_wallCoords[i][1], level1_wallCoords[i][2]);
+		//currentObstacle.rotation.y += 0.785;
+		level1Obstacles.push(currentObstacle);
+
+		scene.add(currentObstacle);
+	}
+	
+}
 
 
 function placeGoal() {
