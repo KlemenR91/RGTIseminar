@@ -186,11 +186,12 @@ function setBackground(path) {
 	// assuming you want the texture to repeat in both directions:
 	backgroundTexture.wrapS = THREE.RepeatWrapping;
 	backgroundTexture.wrapT = THREE.RepeatWrapping;
-	// how many times to repeat in each direction; the default is (1,1)
-	backgroundTexture.repeat.set( 1, 1 );
+	// how many times to repeat in each direction; the default is (1,1),
+	//   which is probably why your example wasn't working
+	//backgroundTexture.repeat.set( 2, 2 );
 
 	backgroundMaterial = new THREE.MeshBasicMaterial({ map : backgroundTexture });
-	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(600, 300), backgroundMaterial);
+	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(600, 400), backgroundMaterial);
 	//backgroundPlane.material.side = THREE.DoubleSide;
 	//backgroundPlane.position.x = 10;
 	//backgroundPlane.position.y += 10;
