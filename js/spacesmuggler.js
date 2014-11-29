@@ -76,9 +76,12 @@ var level1_asteroidCoords = [[7,7], [15, 25], [50, 20], [18, 28], [15, 14], [26,
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
 var obstacleTextures = [];
+var level1_obstacleCoords = [[10, 0, -2], [14, 0, 0], [18, 0, 2]]	//x, y, z
+var obstacleTexIndex = [0, 0, 0]
 
 var laserTexturesPaths = ["res/laser1b.png", "res/laser1.png"];
 var laserTextures = [];
+
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -183,12 +186,11 @@ function setBackground(path) {
 	// assuming you want the texture to repeat in both directions:
 	backgroundTexture.wrapS = THREE.RepeatWrapping;
 	backgroundTexture.wrapT = THREE.RepeatWrapping;
-	// how many times to repeat in each direction; the default is (1,1),
-	//   which is probably why your example wasn't working
-	//backgroundTexture.repeat.set( 2, 2 );
+	// how many times to repeat in each direction; the default is (1,1)
+	backgroundTexture.repeat.set( 1, 1 );
 
 	backgroundMaterial = new THREE.MeshBasicMaterial({ map : backgroundTexture });
-	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(400, 200), backgroundMaterial);
+	backgroundPlane = new THREE.Mesh(new THREE.PlaneGeometry(600, 300), backgroundMaterial);
 	//backgroundPlane.material.side = THREE.DoubleSide;
 	//backgroundPlane.position.x = 10;
 	//backgroundPlane.position.y += 10;
@@ -623,9 +625,9 @@ function placeAsteroids() {
 }
 
 
-function createObstacle() {
+function createObstacle(texIndex) {
 	var geom = new THREE.CylinderGeometry( 0.5, 0.7, 220, 32 );
-	var texture = laserTextures[0];
+	var texture = laserTextures[obstacleTexIndex[texIndex]];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
@@ -634,19 +636,16 @@ function createObstacle() {
 }
 
 function placeObstacles() {
-	/*
-	for (var i = 0; i < level1_asteroidCoords.length; i++) {
-		var currentAster = createAsteroid();
-		currentAster.position.set(level1_asteroidCoords[i][0], level1_asteroidCoords[i][1], 0);
-		asteroids.push(currentAster);
-		scene.add(currentAster);
-	} */
-	var currentObstacle = createObstacle();
-	currentObstacle.position.set(10, 10, -1);
-	currentObstacle.rotation.y += 0.785;
-	level1Obstacles.push(currentObstacle);
 	
-	scene.add(currentObstacle);
+	for (var i = 0; i < level1_obstacleCoords.length; i++) {
+		var currentObstacle = createObstacle(i);
+		//currentObstacle.position.set(10, 10, -1);
+		currentObstacle.position.set(level1_obstacleCoords[i][0], level1_obstacleCoords[i][1], level1_obstacleCoords[i][2]);
+		currentObstacle.rotation.y += 0.785;
+		level1Obstacles.push(currentObstacle);
+	
+		scene.add(currentObstacle);
+	} 
 }
 
 
