@@ -17,14 +17,15 @@ var START_X=-140;
 var START_Y=0;
 
 //CILJ
-var END_X=280;
-var END_Y=180;
+var END_X=140;
+var END_Y=90;
 //Ali je konec
 isEnd=0;
 //Koncni cas
 endTime=0;
-
+var maxTime=200;
 //Podatki
+
 var start_position;
 var playerObject;
 var scene;
@@ -76,7 +77,7 @@ var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
 var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26]]	//x, y
-var level1_bonusCoords = [[-135,20]]
+var level1_bonusCoords = [[-135,-80], [0,0], [140,-90]]
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
 var obstacleTextures = [];
@@ -124,14 +125,17 @@ function initialize() {
 	var material = new THREE.MeshBasicMaterial( { color: 0x0021f0 } );
 
 
-	///BOX
-	var box=new Physijs.BoxMesh(
-		new THREE.BoxGeometry(5,5,5),
-		new THREE.MeshBasicMaterial({color: 0x888888})
-	);
-	box.position.set(-10,-10,0);
-	scene.add(box);
+	// ///BOX
+	// var box=new Physijs.BoxMesh(
+	// 	new THREE.BoxGeometry(5,5,5),
+	// 	new THREE.MeshBasicMaterial({color: 0x888888})
+	// );
+	// box.position.set(-10,-10,0);
+	// scene.add(box);
 
+	///LIGHT
+	var light = new THREE.AmbientLight( 0xffff00 ); // soft white light
+	scene.add( light )
 
 	///END BOX
 	//var cube = new THREE.Mesh( geometry, material );
@@ -376,7 +380,7 @@ function checkCollision(){
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
 	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
 	//playerObject.setPosition(0,0,0);
-	
+
 		playerObject.translateY(-10);
 		playerObject.__dirtyPosition = true;
 		engineOn = 0;
@@ -539,8 +543,10 @@ function restart(){
 function end(){
 	if(playerObject.position.x>(END_X-1) && playerObject.position.x<(END_X+1) && playerObject.position.y>(END_Y-1) && playerObject.position.y<(END_Y+1)){
 		if(isEnd==0){
+			var tmp=maxTime-scoreTime;
+			score=score+tmp*10;
 			endTime=scoreTime;
-			pauseText.innerHTML = "<br>ZMAGA!!!!</br> Potreboval si: "+endTime+"s <br></br><br>Za novo igro pritisni R</br>";
+			pauseText.innerHTML = "<br>ZMAGA!!!!</br> Potreboval si: "+endTime+"s <br>Score: "+score +"</br><br>Za novo igro pritisni R</br>";
 			pauseText.style.display= 'inline';
 			pauseText.style.color="white";
 			pauseText.style.width = 400;
@@ -643,7 +649,7 @@ function createBoundaries() {
 function createBonus() {
 	var geom = new THREE.SphereGeometry(1, 8, 8);
 	//var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
-	var mat = new THREE.MeshBasicMaterial({ color: 0x00ff00,transparent: true, opacity: 0.2 });
+	var mat = new THREE.MeshBasicMaterial({ color: 0xffff00,transparent: true, opacity: 0.4 });
 
 	var aster = new Physijs.SphereMesh( geom, mat, 0 );
 	//var vec = new THREE.vector
@@ -655,7 +661,7 @@ function createBonus() {
 function placeBonus() {
 	for (var i = 0; i < level1_bonusCoords.length; i++) {
 		var currentBonus = createBonus();
-		currentBonus.position.set(level1_bonusCoords[i][0], level1_bonusCoords[i][1], 0);
+		currentBonus.position.set(level1_bonusCoords[i][0], level1_bonusCoords[i][1], 3);
 		bonus.push(currentBonus);
 		scene.add(currentBonus);
 	}
@@ -706,7 +712,6 @@ function placeObstacles() {
 		currentObstacle.position.set(level1_obstacleCoords[i][0], level1_obstacleCoords[i][1], level1_obstacleCoords[i][2]);
 		currentObstacle.rotation.y += 0.785;
 		level1Obstacles.push(currentObstacle);
-
 		scene.add(currentObstacle);
 	}
 }
