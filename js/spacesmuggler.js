@@ -192,7 +192,7 @@ function initialize() {
 	setBackground(backgroundFilePath);
 
 	playerObject.add(camera);		// za TEST - potrebna izboljsava
-	camera.position.z = 200;
+	camera.position.z = 50;
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
 	playerObject.rays=[
@@ -871,7 +871,7 @@ document.onkeyup = handleKeyUp;
 document.onkeypress = handleKeyPress;
 
 var render = function () {
-	testing(playerObject.position.x);
+	//testing(playerObject.position.x);
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
 	requestAnimationFrame(render);
