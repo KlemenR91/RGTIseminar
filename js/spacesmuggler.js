@@ -124,8 +124,10 @@ var LOW_Z_POS = -2;
 var dimensionShiftLocked = false;
 
 var lasers = [];
-var shootingSphereCoords = [130, -80];
-var shootingSphereTexture = "";
+var shootingSphereCoords = [120, -70];
+var shootingSphereTexturesPaths = ["res/blue_laser_sphere.jpg"];
+var shootingSphereTextures = [];
+var shootingCounter = 0;
 
 var cameraMode = 1;
 
@@ -266,6 +268,12 @@ function loadTextures() {
 	for (var i = 0; i < wallTexturesPaths.length; i++) {
 		var texture = THREE.ImageUtils.loadTexture(wallTexturesPaths[i]);
 		wallTextures.push(texture);
+	}
+	
+	//load shooting sphere texture
+	for (var i = 0; i < shootingSphereTexturesPaths.length; i++) {
+		var texture = THREE.ImageUtils.loadTexture(shootingSphereTexturesPaths[i]);
+		shootingSphereTextures.push(texture);
 	}
 
 }
@@ -491,9 +499,56 @@ function checkCollision(){
 	}
 }
 
-function createShootigSphere() {
-	
+function createShootingSpheres() {
+	var geometry = new THREE.SphereGeometry( 5, 32, 32 ); 
+	var material = new THREE.MeshBasicMaterial( {map: shootingSphereTextures[0]} ); 
+	var sphere = new THREE.Mesh( geometry, material ); 
+	sphere.position.set(shootingSphereCoords[0], shootingSphereCoords[1], 0)
+	scene.add( sphere );
 
+}
+
+function handleShootingSpheres() {
+	if (shootingCounter == 500) {
+		shootLasers()
+		shootingCounter = 0;
+	} else shootingCounter++;
+}
+
+function shootLasers() {
+
+	for (var i = 0; i < shootingSphereCoords.length; i++) {
+		var geometry = new THREE.SphereGeometry( 0.5, 6, 6 ); 
+		var material = new THREE.MeshBasicMaterial( {map: laserTextures[2]} ); 
+		var laserShot = new Physijs.SphereMesh( geometry, material, 0.1 );		//small mass
+		
+		//laserShot.position.set(shootingSphereCoords[i][0], shootingSphereCoords[i][1], playerObject.position.z);
+		laserShot.lookAt(playerObject);
+		//laserShot.setLinearVelocity({ x: 0.6, y: 0, z: 0 });
+		
+		laserShot.position.set(shootingSphereCoords[i][0], shootingSphereCoords[i][1], playerObject.position.z);
+		
+		laserShot.addEventListener( 'collision', laserShotCollided);
+		
+		lasers.push(laserShot);
+		scene.add(laserShot);
+	}
+	
+}
+
+function moveLasers() {
+	for (var i = 0; i < lasers.length; i++) {
+		lasers[i].translateY(0.6);
+	}
+
+}
+
+function laserShotCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
+	if (other_object == playerObject) {
+		score -= 200;
+	}
+	scene.remove(this);
+	console.log("laser collided");
 }
 
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
@@ -510,8 +565,8 @@ function playerCollided( other_object, relative_velocity, relative_rotation, con
 		engineOn = 0;
 		score -= 80;
 	} else if (other_object.name == "laserObstacle") {			//check if collided with a laserObstacle
-		playerObject.position.x -= contact_normal["x"] * 8;
-		playerObject.position.y -= contact_normal["y"] * 8;
+		playerObject.position.x -= contact_normal["x"] * 3;
+		playerObject.position.y -= contact_normal["y"] * 3;
 		playerObject.__dirtyPosition = true;
 		engineOn = 0;
 		score -= 110;
@@ -803,7 +858,8 @@ function createAsteroid() {
 function placeAsteroids() {
 	for (var i = 0; i < level1_asteroidCoords.length; i++) {
 		var currentAster = createAsteroid();
-		currentAster.position.set(level1_asteroidCoords[i][0], level1_asteroidCoords[i][1], 0);
+		var ranZ = Math.round(Math.random() * 4) - 2;
+		currentAster.position.set(level1_asteroidCoords[i][0], level1_asteroidCoords[i][1], ranZ);
 		asteroids.push(currentAster);
 		scene.add(currentAster);
 	}
@@ -914,25 +970,9 @@ var render = function () {
 	resetMovementVars();
 	moveAndRotate();
 
-	// prevPositionX=playerObject.position.x;
-	// prevPositionY=playerObject.position.y;
-	// if(collisionDetected==0){
-	// 	resetMovementVars();
-	// 	moveAndRotate();
-	// }
-	// else{
-	// 	playerObject.position.x=prevPositionX;
-	// 	playerObject.position.y=prevPositionY;
-	// 	collisionDetected=0;
-	//
-	// }
-
-
-	//changing the camera position a bit, so its not on top of the object - now changed in the keyPressedListener
-	//camera.position.x = 0;
-	//camera.position.y = 6;
-	//camera.rotation.x = 0.2;
-
+	//moveLasers();
+	//handleShootingSpheres();
+	
 	renderer.render(scene, camera);
 };
 
@@ -946,6 +986,7 @@ function startGame() {
 
 	createBoundaries();
 	placeGoal();
+	//createShootingSpheres();
 	render();
 }
 
