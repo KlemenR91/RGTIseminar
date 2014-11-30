@@ -71,10 +71,12 @@ var boundaries = [];
 var asteroids = [];
 var bonus = [];
 var level1Obstacles = [];
+var laserObstacles = [];
+var wallObstacles = [];
 
 var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 
-var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
+var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg", "res/Asteroid-A_texture.jpg"];
 var asteroidTextures = [];
 var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26]]	//x, y
 var level1_bonusCoords = [[-135,-80], [0,0], [140,-90]]
@@ -85,7 +87,7 @@ var level1_obstacleCoords = [[10, 0, -2], [14, 0, 0], [18, 0, 2]]	//x, y, z
 var obstacleTexIndex = [0, 0, 0]
 
 var laserTexturesPaths = ["res/laser1b.png", "res/laser1.png"];
-var level1_laserObstacleCoords = [[-10, 0, -2], [-5, 0, 0], [0, 0, 2]]	//x, y, z
+var level1_laserObstacleCoords = [[-10, 0, -2], [-5, 0, 0], [0, 0, 4]]	//x, y, z
 var laserObstacleTexIndex = [0, 0, 0]
 var laserTextures = [];
 
@@ -94,7 +96,6 @@ var wallTextures = [];
 var level1_wallCoords = [[10, 75, 0], [10, 0, 0], [10, -75, 0], [37.5, 22.5, 0], [65, 60, 0], [42, -55, 0]];	//x, y, z
 var level1_wallValues = [[5, 50, 8], [5, 50, 8], [5, 50, 8], [50, 5, 8], [5, 80, 8], [67, 20 ,8]];	//width (x), height(y), depth(z)
 // var laserObstacleTexIndex = [0, 0, 0]
-
 
 var playerObjRotation = 0;
 var engineActive = 0;
@@ -111,6 +112,8 @@ var LOW_Z_POS = -2;
 var dimensionShiftLocked = false;
 
 var lasers = [];
+
+var cameraMode = 1;
 
 function initialize() {
 	//setting up scene
@@ -210,7 +213,7 @@ function setBackground(path) {
 	//backgroundPlane.material.side = THREE.DoubleSide;
 	//backgroundPlane.position.x = 10;
 	//backgroundPlane.position.y += 10;
-	backgroundPlane.position.z -= 3;
+	backgroundPlane.position.z -= 5;
 
 	//backgroundPlane.rotation.z = Math.PI / 2;
 	scene.add(backgroundPlane);
@@ -328,6 +331,34 @@ function handleKeyUp(event) {
 	}
 }
 
+function handleKeyPress() {
+	//caution: handling is a bit different than in handleKeyUp or handleKeyDown
+	if (event.charCode == 99) {
+		//button c pressed - change camera
+		if (cameraMode == 1) {
+			camera.rotation.x += 1.2;
+			camera.position.z = 5;
+			camera.position.y = -35;
+			
+			camera.far = 50;
+			camera.updateProjectionMatrix();
+			
+			cameraMode = 2;
+			
+		} else if (cameraMode == 2) {
+			camera.rotation.x -= 1.2;
+			camera.position.z = 50;
+			camera.position.y = 5;
+			
+			camera.far = 60;
+			camera.updateProjectionMatrix();
+			
+			cameraMode = 1;
+		}
+		
+	}
+}
+
 function handleKeys() {
 	if(pauseCheck<0){
 		if (activeKeys["rotateLeft"] == 1) {
@@ -395,16 +426,48 @@ function playerCollided( other_object, relative_velocity, relative_rotation, con
 	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
 	//playerObject.setPosition(0,0,0);
 
-		playerObject.translateY(-10);
+	console.log(other_object);
+	//check if collided with an asteroid
+	if (other_object.name == "asteroid") {
+		playerObject.position.x -= contact_normal["x"] * 8;
+		playerObject.position.y -= contact_normal["y"] * 8;
+		//playerObject.translateY(-10);
 		playerObject.__dirtyPosition = true;
 		engineOn = 0;
-		console.log("trk");
+		score -= 80;
+	} else if (other_object.name == "laserObstacle") {			//check if collided with a laserObstacle
+		playerObject.position.x -= contact_normal["x"] * 8;
+		playerObject.position.y -= contact_normal["y"] * 8;
+		playerObject.__dirtyPosition = true;
+		engineOn = 0;
+		score -= 110;
+	} else if (other_object.name == "wall") {
+		playerObject.position.x -= contact_normal["x"] * 8;
+		playerObject.position.y -= contact_normal["y"] * 8;
+		playerObject.__dirtyPosition = true;
+		engineOn = 0;
+		score -= 200;
+	} else if (other_object.name == "bonus-score") {
+		scene.remove(other_object);
+		score += 1000;
+	} else if (other_object.name == "constraint") {
+		playerObject.position.x -= contact_normal["x"] * 8;
+		playerObject.position.y -= contact_normal["y"] * 8;
+		playerObject.__dirtyPosition = true;
+	} else {
+		playerObject.__dirtyPosition = true;
+		engineOn = 0;
+		
 		score -= 100;
-		playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
-		playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
-		playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
+	}
+	
+	//playerObject.translateY(-10);
+	//console.log("trk");
+	playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
+	playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
+	playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
 
-		console.log(contact_normal);
+	//console.log(contact_normal);
 }
 
 
@@ -608,6 +671,11 @@ function createBoundaries() {
 		new THREE.MeshBasicMaterial({map: textureY}),
 		0
 	);
+	box1.name = "constraint";
+	box2.name = "constraint";
+	box3.name = "constraint";
+	box4.name = "constraint";
+	
 	box1.position.set(MIN_X,0,0);
 	scene.add(box1);
 	box2.position.set(MAX_X,0,0);
@@ -666,6 +734,7 @@ function createBonus() {
 	var mat = new THREE.MeshBasicMaterial({ color: 0xffff00,transparent: true, opacity: 0.4 });
 
 	var aster = new Physijs.SphereMesh( geom, mat, 0 );
+	aster.name = "bonus-score";
 	//var vec = new THREE.vector
 	//aster.setAngularFactor(new THREE.Vector3(0,0,0));
 	//aster.setLinearFactor(new THREE.Vector3(0,0,0));
@@ -691,6 +760,7 @@ function createAsteroid() {
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 
 	var aster = new Physijs.SphereMesh( geom, mat, 10 );
+	aster.name = "asteroid";
 	//var vec = new THREE.vector
 	//aster.setAngularFactor(new THREE.Vector3(0,0,0));
 	//aster.setLinearFactor(new THREE.Vector3(0,0,0));
@@ -707,13 +777,13 @@ function placeAsteroids() {
 
 }
 
-
 function createObstacle(texIndex) {
 	var geom = new THREE.CylinderGeometry( 0.5, 0.5, 200, 32 );
 	var texture = obstacleTextures[obstacleTexIndex[texIndex]];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
+	obstacle.name = "obstacle";
 
 	return obstacle;
 }
@@ -724,6 +794,7 @@ function createLaserObstacle(texIndex) {
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
+	obstacle.name = "laserObstacle";
 
 	return obstacle;
 }
@@ -734,6 +805,7 @@ function createWall(texIndex, width, height, depth) {
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
 	var obstacle = new Physijs.CylinderMesh( geom, mat, 0 );
+	obstacle.name = "wall";
 
 	return obstacle;
 }
@@ -790,6 +862,7 @@ function placeGoal() {
 
 document.onkeydown = handleKeyDown;
 document.onkeyup = handleKeyUp;
+document.onkeypress = handleKeyPress;
 
 var render = function () {
 	//testing(playerObject.position.x);
@@ -823,9 +896,9 @@ var render = function () {
 	// }
 
 
-	//changing the camera position a bit, so its not on top of the object
-	camera.position.x = 0;
-	camera.position.y = 6;
+	//changing the camera position a bit, so its not on top of the object - now changed in the keyPressedListener
+	//camera.position.x = 0;
+	//camera.position.y = 6;		
 	//camera.rotation.x = 0.2;
 
 	renderer.render(scene, camera);
