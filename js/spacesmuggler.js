@@ -275,18 +275,11 @@ function loadPlayerOBJ() {
 
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'res/ShipObj.obj', 'res/ShipObj.mtl', function ( object ) {
-<<<<<<< HEAD
 
 			loadedObject = object;
 			object.position.x = - 120;
 			object.position.y = 10;
 			scene.add( loadedObject );
-
-			//playerObject = new Physijs.BoxMesh( new THREE.SphereGeometry(1, 8, 8), new THREE.MeshLambertMaterial({ color: 0xffff00 }) );
-			//scene.add(playerObject);
-
-			//playerObject.add(camera);
-=======
 			
 			//loadedObject = object;
 			object.position.x = 0;
@@ -905,7 +898,7 @@ document.onkeyup = handleKeyUp;
 document.onkeypress = handleKeyPress;
 
 var render = function () {
-	testing(playerObject.position.x);
+	//testing(playerObject.position.x);
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
 	requestAnimationFrame(render);
