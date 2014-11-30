@@ -15,6 +15,8 @@ var MIN_X=-150;
 //ZACETEK
 var START_X=-140;
 var START_Y=0;
+// var START_X=0;
+// var START_Y=0;
 
 //CILJ
 var END_X=140;
@@ -83,7 +85,11 @@ var asteroidTextures = [];
 var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26], [-100, 42], [-81, 20], [-120, 65], [-70, 80],
 														[-110, -80], [-41, 43], [-42, 12], [-120, -34], [-59,-31], [-106, -38], [-137, -52], [-96, -37], [-78, 56],
 														[-104,0],[-64,-5],[-63,32],[-37,75],[-25,18],[-35,-51],[-36,-80],[-95,-60],[-64,-56],[-36,-20],[-72,-77],[-123,-65],
-														[-110,-18],[-112,-51],[-117,20],[-139,27],[-76,-32]]	//x, y
+														[-110,-18],[-112,-51],[-117,20],[-139,27],[-76,-32],
+														///DELETE
+														[98,-76],[109,-88],[128,-86],[117,-65],[137,-65],[120,-54],[102,-57],[81,-35],[70,-21],[91,2],[116,3],[133,-11],
+														[117,-35],[131,-35],[144,-50],[134,-27],[113,-21],[93,-12],[72,-5],[99,-34],[104,57],[127,66],[115,90],[93,85],
+														[86,21],[105,14],[122,21],[140,6],[130,24],[120,41],[88,38],[73,61],[86,92],[78,79],[110,74],[139,47],[104,36]]	//x, y
 var level1_bonusCoords = [[-135,-80], [0,0], [140,-90], [-130,10],[80,-90],[50,-20]]
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
@@ -92,9 +98,9 @@ var level1_obstacleCoords = [[10, 0, -2], [14, 0, 0], [18, 0, 2]]	//x, y, z
 var obstacleTexIndex = [0, 0, 0]
 
 var laserTexturesPaths = ["res/laser1b.png", "res/laser1d.png","res/laser1c.png"];
-var level1_laserObstacleCoords = [[-10, 0, -2], [-5, 0, 0], [0, 0, 2], [25, -85, 0], [30, -85, -2], [40, -85, 2], [45, -85, 0], [50, -85, -2], [55, -85, 2],[65, -85, 0], [70, -85, -2], [75, -85, 2],[30, -15, 0], [35, -15, -2], [40, -15, 2],[45, -15, 2], [55, -15, 2], [60, -15, 2],[65, -15, 0]];	//x, y, z
-var level1_laserLength=[200,200,200,30,30,30,30,30,30,30,30,30,70,70,70,70,70,70,70];
-var laserObstacleTexIndex = [0, 0, 0,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,0]
+var level1_laserObstacleCoords = [[-10, 0, -2], [-5, 0, 0], [0, 0, 2], [25, -85, 0], [30, -85, -2], [40, -85, 2], [45, -85, 0], [50, -85, -2], [55, -85, 2],[65, -85, 0], [70, -85, -2], [75, -85, 2],[85, -85, 2],[85, -85, -2],[30, -15, -2], [30, -15, 0], [40, -15, 0],[40, -15, 2], [50, -15, 0],[50, -15, -2],[60, -15, -2], [60, -15, 2]];	//x, y, z
+var level1_laserLength=[200,200,200,30,30,30,30,30,30,30,30,30,30,30,70,70,70,70,70,70,70,70,70];
+var laserObstacleTexIndex = [0, 0, 0,1,1,1,1,1,1,1,1,1,0,1,2,0,2,1,1,0,2,0]
 var laserTextures = [];
 
 var wallTexturesPaths = ["res/metallic-texture-small.jpg"];
@@ -154,11 +160,11 @@ function initialize() {
 	//var light = new THREE.AmbientLight( 0xffff00 ); // soft white light
 	var light = new THREE.AmbientLight( 0x912CEE ); // soft white light
 	scene.add( light )
-	
+
 	var light2 = new THREE.PointLight( 0xffffff, 1, 1000 );
 	light2.position.set( 0, 0, 50 );
 	scene.add( light2 );
-	
+
 
 	///END BOX
 	//var cube = new THREE.Mesh( geometry, material );
@@ -185,7 +191,7 @@ function initialize() {
 	///END
 	playerObject = new Physijs.BoxMesh( geometry, material, 100 );
 	scene.add( playerObject );
-	
+
 	loadPlayerOBJ();
 
 	var backgroundFilePath = "res/stardust-3840x2160.png";
@@ -264,18 +270,18 @@ function loadTextures() {
 
 function loadPlayerOBJ() {
 	THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
-	
+
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'res/ShipObj.obj', 'res/ShipObj.mtl', function ( object ) {
-			
+
 			loadedObject = object;
 			object.position.x = - 120;
 			object.position.y = 10;
 			scene.add( loadedObject );
-			
+
 			//playerObject = new Physijs.BoxMesh( new THREE.SphereGeometry(1, 8, 8), new THREE.MeshLambertMaterial({ color: 0xffff00 }) );
 			//scene.add(playerObject);
-			
+
 			//playerObject.add(camera);
 							// delete
 							// var geom = new THREE.SphereGeometry(1, 8, 8);
@@ -284,7 +290,7 @@ function loadPlayerOBJ() {
 
 							// var bonus = new Physijs.SphereMesh( geom, mat, 0 );
 		});
-		
+
 	// var loader = new THREE.OBJLoader();
 	// loader.load( 'res/ShipObj.obj', function ( object ) {
 
@@ -737,7 +743,7 @@ function createBoundaries() {
 function createBonus() {
 	var geom = new THREE.SphereGeometry(1, 8, 8);
 	//var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
-	var mat = new THREE.MeshLambertMaterial({ color: 0xffffff,transparent: true, opacity: 0.6, wireframe: true });
+	var mat = new THREE.MeshBasicMaterial({ color: 0xffff00,transparent: true, opacity: 0.6, wireframe: true });
 
 	var bonus = new Physijs.SphereMesh( geom, mat, 0 );
 	bonus.name = "bonus-score";
@@ -871,7 +877,7 @@ document.onkeyup = handleKeyUp;
 document.onkeypress = handleKeyPress;
 
 var render = function () {
-	//testing(playerObject.position.x);
+	testing(playerObject.position.x);
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
 	requestAnimationFrame(render);
