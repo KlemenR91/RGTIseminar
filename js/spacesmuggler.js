@@ -77,16 +77,17 @@ var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
 var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26]]	//x, y
-var level1_bonusCoords = [[-135,-80], [0,0], [140,-90], [-130,10],[80,-90]]
+var level1_bonusCoords = [[-135,-80], [0,0], [140,-90], [-130,10],[80,-90],[50,-20]]
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
 var obstacleTextures = [];
 var level1_obstacleCoords = [[10, 0, -2], [14, 0, 0], [18, 0, 2]]	//x, y, z
 var obstacleTexIndex = [0, 0, 0]
 
-var laserTexturesPaths = ["res/laser1b.png", "res/laser1.png"];
-var level1_laserObstacleCoords = [[-10, 0, -2], [-5, 0, 0], [0, 0, 2]]	//x, y, z
-var laserObstacleTexIndex = [0, 0, 0]
+var laserTexturesPaths = ["res/laser1b.png", "res/laser1d.png","res/laser1c.png"];
+var level1_laserObstacleCoords = [[-10, 0, -2], [-5, 0, 0], [0, 0, 2], [25, -85, 0], [30, -85, -2], [40, -85, 2], [45, -85, 0], [50, -85, -2], [55, -85, 2],[65, -85, 0], [70, -85, -2], [75, -85, 2],[30, -15, 0], [35, -15, -2], [40, -15, 2],[45, -15, 2], [55, -15, 2], [60, -15, 2],[65, -15, 0]];	//x, y, z
+var level1_laserLength=[200,200,200,30,30,30,30,30,30,30,30,30,70,70,70,70,70,70,70];
+var laserObstacleTexIndex = [0, 0, 0,1,1,1,1,1,1,1,1,1,2,2,2,1,1,1,0]
 var laserTextures = [];
 
 var wallTexturesPaths = ["res/metallic-texture-small.jpg"];
@@ -680,8 +681,8 @@ function createObstacle(texIndex) {
 	return obstacle;
 }
 
-function createLaserObstacle(texIndex) {
-	var geom = new THREE.CylinderGeometry( 0.5, 0.7, 220, 32 );
+function createLaserObstacle(texIndex,height) {
+	var geom = new THREE.CylinderGeometry( 0.5, 0.5, height, 32 );
 	var texture = laserTextures[laserObstacleTexIndex[texIndex]];
 	var mat = new THREE.MeshBasicMaterial({ map : texture });
 	//var mat = new THREE.MeshBasicMaterial({ color: 0xFFFFFF });
@@ -716,7 +717,7 @@ function placeObstacles() {
 
 	//place laser obstacles
 	for (var i = 0; i < level1_laserObstacleCoords.length; i++) {
-		var currentObstacle = createLaserObstacle(i);
+		var currentObstacle = createLaserObstacle(i,level1_laserLength[i]);
 		//currentObstacle.position.set(10, 10, -1);
 		currentObstacle.position.set(level1_laserObstacleCoords[i][0], level1_laserObstacleCoords[i][1], level1_laserObstacleCoords[i][2]);
 		currentObstacle.rotation.y += 0.785;
@@ -757,7 +758,6 @@ var render = function () {
 	//testing(playerObject.position.x);
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
-	testing(playerObject.position.x);
 	requestAnimationFrame(render);
 	scene.simulate();
 	drawHUD();
