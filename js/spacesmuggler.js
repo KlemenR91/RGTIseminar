@@ -394,17 +394,21 @@ function checkCollision(){
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
 	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
 	//playerObject.setPosition(0,0,0);
-
-		playerObject.translateY(-10);
-		playerObject.__dirtyPosition = true;
-		engineOn = 0;
-		console.log("trk");
-		score -= 100;
-		playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
-		playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
-		playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
-
-		console.log(contact_normal);
+		if(other_object.material.wireframe==true){
+			scene.remove(other_object);
+			score +=500;
+		}
+		else{
+			playerObject.translateY(-10);
+			playerObject.__dirtyPosition = true;
+			engineOn = 0;
+			console.log("trk");
+			score -= 100;
+			playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
+			playerObject.setLinearVelocity({ x: 0, y: 0, z: 0 });
+			playerObject.setAngularVelocity({ x: 0, y: 0, z: 0 });
+			console.log(contact_normal);
+		}
 }
 
 
