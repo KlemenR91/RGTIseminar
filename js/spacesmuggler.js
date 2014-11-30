@@ -193,7 +193,6 @@ function initialize() {
 	scene.add( playerObject );
 
 	loadPlayerOBJ();
-
 	var backgroundFilePath = "res/stardust-3840x2160.png";
 	setBackground(backgroundFilePath);
 
@@ -214,7 +213,7 @@ function initialize() {
 
 	playerObject.caster=new THREE.Raycaster();
 	//scene.simulate();
-
+	playerObject.position.set(-140,0,0);
 	playerObject.addEventListener( 'collision', playerCollided);
 }
 
@@ -273,24 +272,23 @@ function loadPlayerOBJ() {
 
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'res/ShipObj.obj', 'res/ShipObj.mtl', function ( object ) {
-<<<<<<< HEAD
+
 
 			loadedObject = object;
-			object.position.x = - 120;
-			object.position.y = 10;
+			//object.position.x = - 120;
+			//object.position.y = 10;
 			scene.add( loadedObject );
 
 			//playerObject = new Physijs.BoxMesh( new THREE.SphereGeometry(1, 8, 8), new THREE.MeshLambertMaterial({ color: 0xffff00 }) );
 			//scene.add(playerObject);
 
 			//playerObject.add(camera);
-=======
-			
+
+
 			//loadedObject = object;
-			object.position.x = 0;
-			object.position.y = 0;
+
 			//scene.add( loadedObject );
-			
+
 			scene.remove(playerObject);
 			//var geom = new THREE.Cylinder
 			var geometry = new THREE.BoxGeometry( 1.6, 2, 1 );
@@ -300,12 +298,14 @@ function loadPlayerOBJ() {
 			object.rotation.set(1.57079, -1.57079, 0);
 			object.position.y += 2;
 			playerObject.add(object);
-			playerObject.position.x = -20;
+			//object.position.x = 0;
+			//object.position.y = 0;
+			//playerObject.position.x = -20;
 			scene.add(playerObject);
-			
+
 			playerObject.addEventListener( 'collision', playerCollided);
 			playerObject.add(camera);
->>>>>>> FETCH_HEAD
+			playerObject.position.set(START_X,START_Y,0);
 							// delete
 							// var geom = new THREE.SphereGeometry(1, 8, 8);
 							// var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
