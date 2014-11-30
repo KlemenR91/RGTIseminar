@@ -77,7 +77,7 @@ var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
 var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26]]	//x, y
-var level1_bonusCoords = [[-135,-80], [0,0], [140,-90], [-130,10]]
+var level1_bonusCoords = [[-135,-80], [0,0], [140,-90], [-130,10],[80,-90]]
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
 var obstacleTextures = [];
@@ -91,7 +91,7 @@ var laserTextures = [];
 
 var wallTexturesPaths = ["res/metallic-texture-small.jpg"];
 var wallTextures = [];
-var level1_wallCoords = [[10, 75, 0], [10, 0, 0], [10, -75, 0], [37.5, 22.5, 0], [65, 60, 0], [42, -55, 0]];	//x, y, z
+var level1_wallCoords = [[10, 75, 0], [10, 0, 0], [10, -75, 0], [37.5, 22.5, 0], [65, 60, 0], [55, -60, 0]];	//x, y, z
 var level1_wallValues = [[5, 50, 8], [5, 50, 8], [5, 50, 8], [50, 5, 8], [5, 80, 8], [67, 20 ,8]];	//width (x), height(y), depth(z)
 // var laserObstacleTexIndex = [0, 0, 0]
 
@@ -757,7 +757,7 @@ var render = function () {
 	//testing(playerObject.position.x);
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
-	//testing();
+	testing(playerObject.position.x);
 	requestAnimationFrame(render);
 	scene.simulate();
 	drawHUD();
