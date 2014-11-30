@@ -34,6 +34,8 @@ var renderer;
 var backgroundPlane;
 var backgroundTexture;
 var backgroundMaterial;
+var loadedObject;
+
 //PAUSE
 //pauseCheck pove ali je vkljucena pavza ali ne. Ce je manj kot 0 NI vkljucena
 var pauseCheck=-1;
@@ -146,8 +148,14 @@ function initialize() {
 	// scene.add(box);
 
 	///LIGHT
-	var light = new THREE.AmbientLight( 0xffff00 ); // soft white light
+	//var light = new THREE.AmbientLight( 0xffff00 ); // soft white light
+	var light = new THREE.AmbientLight( 0x912CEE ); // soft white light
 	scene.add( light )
+	
+	var light2 = new THREE.PointLight( 0xffffff, 1, 1000 );
+	light2.position.set( 0, 0, 50 );
+	scene.add( light2 );
+	
 
 	///END BOX
 	//var cube = new THREE.Mesh( geometry, material );
@@ -174,6 +182,8 @@ function initialize() {
 	///END
 	playerObject = new Physijs.BoxMesh( geometry, material, 100 );
 	scene.add( playerObject );
+	
+	loadPlayerOBJ();
 
 	var backgroundFilePath = "res/stardust-3840x2160.png";
 	setBackground(backgroundFilePath);
@@ -247,6 +257,39 @@ function loadTextures() {
 		wallTextures.push(texture);
 	}
 
+}
+
+function loadPlayerOBJ() {
+	THREE.Loader.Handlers.add( /\.dds$/i, new THREE.DDSLoader() );
+	
+	var loader = new THREE.OBJMTLLoader();
+	loader.load( 'res/ShipObj.obj', 'res/ShipObj.mtl', function ( object ) {
+			
+			loadedObject = object;
+			object.position.x = - 120;
+			object.position.y = 10;
+			scene.add( loadedObject );
+			
+			//playerObject = new Physijs.BoxMesh( new THREE.SphereGeometry(1, 8, 8), new THREE.MeshLambertMaterial({ color: 0xffff00 }) );
+			//scene.add(playerObject);
+			
+			//playerObject.add(camera);
+							// delete
+							// var geom = new THREE.SphereGeometry(1, 8, 8);
+							// var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
+							// var mat = new THREE.MeshLambertMaterial({ color: 0xffff00,transparent: true, opacity: 0.6, wireframe: true });
+
+							// var bonus = new Physijs.SphereMesh( geom, mat, 0 );
+		});
+		
+	// var loader = new THREE.OBJLoader();
+	// loader.load( 'res/ShipObj.obj', function ( object ) {
+
+			// object.position.x = - 120;
+			// object.position.y = 10;
+			// scene.add( object );
+
+		// });
 }
 
 //map for input values
@@ -339,7 +382,7 @@ function handleKeyPress() {
 		if (cameraMode == 1) {
 			camera.rotation.x += 1.2;
 			camera.position.z = 5;
-			camera.position.y = -35;
+			camera.position.y = -20;
 			
 			camera.far = 50;
 			camera.updateProjectionMatrix();
