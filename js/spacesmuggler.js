@@ -273,6 +273,7 @@ function loadPlayerOBJ() {
 
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'res/ShipObj.obj', 'res/ShipObj.mtl', function ( object ) {
+<<<<<<< HEAD
 
 			loadedObject = object;
 			object.position.x = - 120;
@@ -283,6 +284,28 @@ function loadPlayerOBJ() {
 			//scene.add(playerObject);
 
 			//playerObject.add(camera);
+=======
+			
+			//loadedObject = object;
+			object.position.x = 0;
+			object.position.y = 0;
+			//scene.add( loadedObject );
+			
+			scene.remove(playerObject);
+			//var geom = new THREE.Cylinder
+			var geometry = new THREE.BoxGeometry( 1.6, 2, 1 );
+			//var mesh = new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.0 } );
+			var mesh = new THREE.MeshBasicMaterial( { color: 0xffffff, transparent: true, opacity: 0.0 } );
+			playerObject = new Physijs.BoxMesh( geometry, mesh);
+			object.rotation.set(1.57079, -1.57079, 0);
+			object.position.y += 2;
+			playerObject.add(object);
+			playerObject.position.x = -20;
+			scene.add(playerObject);
+			
+			playerObject.addEventListener( 'collision', playerCollided);
+			playerObject.add(camera);
+>>>>>>> FETCH_HEAD
 							// delete
 							// var geom = new THREE.SphereGeometry(1, 8, 8);
 							// var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
@@ -885,7 +908,7 @@ var render = function () {
 	drawHUD();
 	end();
 	handleInput();
-	checkCollision();
+	//checkCollision();
 
 	//cube.rotation.x += 0.1;
 	//cube.rotation.y += 0.1;
