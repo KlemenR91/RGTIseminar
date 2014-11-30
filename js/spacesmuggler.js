@@ -192,7 +192,7 @@ function initialize() {
 	setBackground(backgroundFilePath);
 
 	playerObject.add(camera);		// za TEST - potrebna izboljsava
-	camera.position.z = 200;
+	camera.position.z = 50;
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
 	playerObject.rays=[
