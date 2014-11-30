@@ -152,14 +152,6 @@ function initialize() {
 	var material = new THREE.MeshBasicMaterial( { color: 0x0021f0 } );
 
 
-	// ///BOX
-	// var box=new Physijs.BoxMesh(
-	// 	new THREE.BoxGeometry(5,5,5),
-	// 	new THREE.MeshBasicMaterial({color: 0x888888})
-	// );
-	// box.position.set(-10,-10,0);
-	// scene.add(box);
-
 	///LIGHT
 	//var light = new THREE.AmbientLight( 0xffff00 ); // soft white light
 	var light = new THREE.AmbientLight( 0x912CEE ); // soft white light
@@ -170,29 +162,6 @@ function initialize() {
 	scene.add( light2 );
 
 
-	///END BOX
-	//var cube = new THREE.Mesh( geometry, material );
-	//scene.add( cube );
-	//celoten objekt
-
-	///GROUND
-	// var ground_material = Physijs.createMaterial(
-	// 	new THREE.MeshLambertMaterial({ map: THREE.ImageUtils.loadTexture( 'res/stardust-1920x1080.png' ) }),
-	// 	.8, // high friction
-	// 	.3 // low restitution
-	// );
-	// ground_material.map.wrapS = ground_material.map.wrapT = THREE.RepeatWrapping;
-	// ground_material.map.repeat.set( 3, 3 );
-	//
-	// ground = new Physijs.BoxMesh(
-	// 	new THREE.BoxGeometry(100, 100, 1),
-	// 	ground_material,
-	// 	0 // mass
-	// );
-	// ground.position.set(0,0,0);
-	// scene.add(ground);
-
-	///END
 	playerObject = new Physijs.BoxMesh( geometry, material, 100 );
 	scene.add( playerObject );
 
@@ -204,6 +173,8 @@ function initialize() {
 	camera.position.z = 50;
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
+	
+	/*
 	playerObject.rays=[
 	new THREE.Vector3(0, 0, 1),
 	new THREE.Vector3(1, 0, 1),
@@ -214,9 +185,9 @@ function initialize() {
 	new THREE.Vector3(-1, 0, 0),
 	new THREE.Vector3(-1, 0, 1)
 	];
-
 	playerObject.caster=new THREE.Raycaster();
-	//scene.simulate();
+	*/
+	
 	playerObject.position.set(-140,0,0);
 	playerObject.addEventListener( 'collision', playerCollided);
 }
@@ -283,20 +254,9 @@ function loadPlayerOBJ() {
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'res/ShipObj.obj', 'res/ShipObj.mtl', function ( object ) {
 
-
-			loadedObject = object;
+			//loadedObject = object;
 			//object.position.x = - 120;
 			//object.position.y = 10;
-			scene.add( loadedObject );
-
-			//playerObject = new Physijs.BoxMesh( new THREE.SphereGeometry(1, 8, 8), new THREE.MeshLambertMaterial({ color: 0xffff00 }) );
-			//scene.add(playerObject);
-
-			//playerObject.add(camera);
-
-
-			//loadedObject = object;
-
 			//scene.add( loadedObject );
 
 			scene.remove(playerObject);
@@ -308,11 +268,7 @@ function loadPlayerOBJ() {
 			object.rotation.set(1.57079, -1.57079, 0);
 			object.position.y += 2;
 			playerObject.add(object);
-
-			//object.position.x = 0;
-			//object.position.y = 0;
-
-
+			
 			playerObject.add(camera);		// za TEST - potrebna izboljsava
 			camera.position.z = 50;
 			playerObject.position.set(START_X,START_Y,0);
@@ -326,13 +282,6 @@ function loadPlayerOBJ() {
 			playerObject.add(camera);
 
 			playerObject.position.set(START_X,START_Y,0);
-							// delete
-							// var geom = new THREE.SphereGeometry(1, 8, 8);
-							// var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
-							// var mat = new THREE.MeshLambertMaterial({ color: 0xffff00,transparent: true, opacity: 0.6, wireframe: true });
-
-							// var bonus = new Physijs.SphereMesh( geom, mat, 0 );
-
 		});
 
 	// var loader = new THREE.OBJLoader();
@@ -503,6 +452,7 @@ function handleInput() {
 	handleKeys();
 }
 
+/*
 function checkCollision(){
 	var collisions;
 	var i;
@@ -516,7 +466,7 @@ function checkCollision(){
 			collisionDetected=1;
 		}
 	}
-}
+}*/
 
 function createShootingSpheres() {
 	var geometry = new THREE.SphereGeometry( 5, 32, 32 ); 
@@ -571,9 +521,8 @@ function laserShotCollided( other_object, relative_velocity, relative_rotation, 
 
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
 	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
-	//playerObject.setPosition(0,0,0);
 
-	console.log(other_object);
+	//console.log(other_object);
 	//check if collided with an asteroid
 	if (other_object.name == "asteroid") {
 		playerObject.position.x -= contact_normal["x"] * 8;
@@ -617,8 +566,6 @@ function playerCollided( other_object, relative_velocity, relative_rotation, con
 	//console.log(contact_normal);
 }
 
-
-
 function resetMovementVars() {
 
 	moveForward = 0.0;
@@ -656,8 +603,7 @@ function moveAndRotate() {
 	// if(playerObject.position.x>MAX_X || playerObject.position.x<MIN_X ||playerObject.position.y>MAX_Y || playerObject.position.y<MIN_Y  ){
 	// 	playerObject.translateY((-1)*speed);
 	// }
-
-
+	
 	if (turn != 0) {
 		playerObject.rotation.z += turn;
 		playerObject.__dirtyRotation = true;
@@ -682,8 +628,6 @@ function moveAndRotate() {
 			}
 		}
 	}
-
-
 	//	checkCollision();
 	//	if(collisionDetected==1){
 	//		playerObject.position.x=playerObject.position.x-(playerObject.position.x-prevX)*20;
@@ -982,9 +926,6 @@ var render = function () {
 	handleInput();
 	//checkCollision();
 
-	//cube.rotation.x += 0.1;
-	//cube.rotation.y += 0.1;
-	//cube.position.z += 0.01;
 	resetMovementVars();
 	moveAndRotate();
 
