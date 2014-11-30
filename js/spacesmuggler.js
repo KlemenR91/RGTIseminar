@@ -124,6 +124,8 @@ var LOW_Z_POS = -2;
 var dimensionShiftLocked = false;
 
 var lasers = [];
+var shootingSphereCoords = [130, -80];
+var shootingSphereTexture = "";
 
 var cameraMode = 1;
 
@@ -272,12 +274,16 @@ function loadPlayerOBJ() {
 
 	var loader = new THREE.OBJMTLLoader();
 	loader.load( 'res/ShipObj.obj', 'res/ShipObj.mtl', function ( object ) {
+<<<<<<< HEAD
 
+=======
+>>>>>>> FETCH_HEAD
 
 			loadedObject = object;
 			//object.position.x = - 120;
 			//object.position.y = 10;
 			scene.add( loadedObject );
+<<<<<<< HEAD
 
 			//playerObject = new Physijs.BoxMesh( new THREE.SphereGeometry(1, 8, 8), new THREE.MeshLambertMaterial({ color: 0xffff00 }) );
 			//scene.add(playerObject);
@@ -285,6 +291,9 @@ function loadPlayerOBJ() {
 			//playerObject.add(camera);
 
 
+=======
+			
+>>>>>>> FETCH_HEAD
 			//loadedObject = object;
 
 			//scene.add( loadedObject );
@@ -298,13 +307,23 @@ function loadPlayerOBJ() {
 			object.rotation.set(1.57079, -1.57079, 0);
 			object.position.y += 2;
 			playerObject.add(object);
+<<<<<<< HEAD
 			//object.position.x = 0;
 			//object.position.y = 0;
+=======
+			
+			playerObject.add(camera);		// za TEST - potrebna izboljsava
+			camera.position.z = 50;
+			playerObject.position.set(START_X,START_Y,0);
+			playerObject.rotation.set(0, 0, -1.57079);
+			
+>>>>>>> FETCH_HEAD
 			//playerObject.position.x = -20;
 			scene.add(playerObject);
 
 			playerObject.addEventListener( 'collision', playerCollided);
 			playerObject.add(camera);
+<<<<<<< HEAD
 			playerObject.position.set(START_X,START_Y,0);
 							// delete
 							// var geom = new THREE.SphereGeometry(1, 8, 8);
@@ -312,6 +331,8 @@ function loadPlayerOBJ() {
 							// var mat = new THREE.MeshLambertMaterial({ color: 0xffff00,transparent: true, opacity: 0.6, wireframe: true });
 
 							// var bonus = new Physijs.SphereMesh( geom, mat, 0 );
+=======
+>>>>>>> FETCH_HEAD
 		});
 
 	// var loader = new THREE.OBJLoader();
@@ -497,6 +518,10 @@ function checkCollision(){
 	}
 }
 
+function createShootigSphere() {
+	
+
+}
 
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
 	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
@@ -900,7 +925,7 @@ document.onkeyup = handleKeyUp;
 document.onkeypress = handleKeyPress;
 
 var render = function () {
-	testing(playerObject.position.x);
+	//testing(playerObject.position.x);
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
 	requestAnimationFrame(render);
