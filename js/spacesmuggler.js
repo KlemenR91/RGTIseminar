@@ -77,7 +77,7 @@ var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg"];
 var asteroidTextures = [];
 var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26]]	//x, y
-var level1_bonusCoords = [[-135,-80], [0,0], [140,-90]]
+var level1_bonusCoords = [[-135,-80], [0,0], [140,-90], [-130,10]]
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
 var obstacleTextures = [];
@@ -236,7 +236,7 @@ function loadTextures() {
 		var texture = THREE.ImageUtils.loadTexture(laserTexturesPaths[i]);
 		laserTextures.push(texture);
 	}
-	
+
 	//load wall textures
 	for (var i = 0; i < wallTexturesPaths.length; i++) {
 		var texture = THREE.ImageUtils.loadTexture(wallTexturesPaths[i]);
@@ -616,60 +616,18 @@ function createBoundaries() {
 	scene.add(box3);
 	box4.position.set(0,MAX_Y,0);
 	scene.add(box4);
-	// var material = new THREE.LineBasicMaterial({
-	// 	color: 0xffffff
-	// });
-	//
-	// var geometry = new THREE.Geometry();
-	// geometry.vertices.push(
-	// 	new THREE.Vector3( MIN_X, MIN_Y, 0 ),
-	// 	new THREE.Vector3( MIN_X, MAX_Y, 0 )
-	// );
-	// var line = new THREE.Line( geometry, material );
-	// boundaries.push(line);
-	// scene.add( line );
-	//
-	//
-	// geometry = new THREE.Geometry();
-	// geometry.vertices.push(
-	// 	new THREE.Vector3( MIN_X, MAX_Y, 0 ),
-	// 	new THREE.Vector3( MAX_X, MAX_Y, 0 )
-	// );
-	// var line = new THREE.Line( geometry, material );
-	// boundaries.push(line);
-	// scene.add( line );
-	//
-	//
-	// geometry.vertices.push(
-	// 	new THREE.Vector3( MAX_X, MAX_Y, 0 ),
-	// 	new THREE.Vector3( MAX_X, MIN_Y, 0 )
-	// );
-	//
-	// var line = new THREE.Line( geometry, material );
-	// boundaries.push(line);
-	// scene.add( line );
-	//
-	//
-	// geometry.vertices.push(
-	// 	new THREE.Vector3( MAX_X, MIN_Y, 0 ),
-	// 	new THREE.Vector3( MIN_X, MIN_Y, 0 )
-	// );
-	//
-	// var line = new THREE.Line( geometry, material );
-	// boundaries.push(line);
-	// scene.add( line );
 }
 
 function createBonus() {
 	var geom = new THREE.SphereGeometry(1, 8, 8);
 	//var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
-	var mat = new THREE.MeshBasicMaterial({ color: 0xffff00,transparent: true, opacity: 0.4 });
+	var mat = new THREE.MeshLambertMaterial({ color: 0xffff00,transparent: true, opacity: 0.6, wireframe: true });
 
-	var aster = new Physijs.SphereMesh( geom, mat, 0 );
+	var bonus = new Physijs.SphereMesh( geom, mat, 0 );
 	//var vec = new THREE.vector
 	//aster.setAngularFactor(new THREE.Vector3(0,0,0));
 	//aster.setLinearFactor(new THREE.Vector3(0,0,0));
-	return aster;
+	return bonus;
 }
 
 function placeBonus() {
@@ -739,7 +697,7 @@ function createWall(texIndex, width, height, depth) {
 }
 
 function placeObstacles() {
-	
+
 	//place laser
 	/*
 	for (var i = 0; i < level1_obstacleCoords.length; i++) {
@@ -751,7 +709,7 @@ function placeObstacles() {
 		scene.add(currentObstacle);
 	}
 	*/
-	
+
 	//place laser obstacles
 	for (var i = 0; i < level1_laserObstacleCoords.length; i++) {
 		var currentObstacle = createLaserObstacle(i);
@@ -762,7 +720,7 @@ function placeObstacles() {
 
 		scene.add(currentObstacle);
 	}
-	
+
 	//place walls
 	for (var i = 0; i < level1_wallCoords.length; i++) {
 		var currentObstacle = createWall(i, level1_wallValues[i][0], level1_wallValues[i][1], level1_wallValues[i][2]);
@@ -772,7 +730,7 @@ function placeObstacles() {
 
 		scene.add(currentObstacle);
 	}
-	
+
 }
 
 
