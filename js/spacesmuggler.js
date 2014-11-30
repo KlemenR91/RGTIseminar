@@ -80,7 +80,10 @@ var boundaryTexture=["res/ograjaY.png","res/ograjaX.png"];
 
 var asteroidTexturesPaths = ["res/Craterscape.jpg", "res/stone_texture1.jpg", "res/Asteroid-A_texture.jpg"];
 var asteroidTextures = [];
-var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26]]	//x, y
+var level1_asteroidCoords = [[-125,0], [-110, 10], [-90, -10], [-125, 30], [15, 14], [26, 26], [-100, 42], [-81, 20], [-120, 65], [-70, 80],
+														[-110, -80], [-41, 43], [-42, 12], [-120, -34], [-59,-31], [-106, -38], [-137, -52], [-96, -37], [-78, 56],
+														[-104,0],[-64,-5],[-63,32],[-37,75],[-25,18],[-35,-51],[-36,-80],[-95,-60],[-64,-56],[-36,-20],[-72,-77],[-123,-65],
+														[-110,-18],[-112,-51],[-117,20],[-139,27],[-76,-32]]	//x, y
 var level1_bonusCoords = [[-135,-80], [0,0], [140,-90], [-130,10],[80,-90],[50,-20]]
 
 var obstacleTexturesPaths = ["res/metallic-texture-small.jpg"];
@@ -189,7 +192,7 @@ function initialize() {
 	setBackground(backgroundFilePath);
 
 	playerObject.add(camera);		// za TEST - potrebna izboljsava
-	camera.position.z = 50;
+	camera.position.z = 200;
 	playerObject.position.set(START_X,START_Y,0);
 	playerObject.rotation.set(0,0,0);
 	playerObject.rays=[
@@ -383,23 +386,23 @@ function handleKeyPress() {
 			camera.rotation.x += 1.2;
 			camera.position.z = 5;
 			camera.position.y = -20;
-			
+
 			camera.far = 50;
 			camera.updateProjectionMatrix();
-			
+
 			cameraMode = 2;
-			
+
 		} else if (cameraMode == 2) {
 			camera.rotation.x -= 1.2;
 			camera.position.z = 50;
 			camera.position.y = 5;
-			
+
 			camera.far = 60;
 			camera.updateProjectionMatrix();
-			
+
 			cameraMode = 1;
 		}
-		
+
 	}
 }
 
@@ -501,10 +504,10 @@ function playerCollided( other_object, relative_velocity, relative_rotation, con
 	} else {
 		playerObject.__dirtyPosition = true;
 		engineOn = 0;
-		
+
 		score -= 100;
 	}
-	
+
 	//playerObject.translateY(-10);
 	//console.log("trk");
 	playerObject.setAngularFactor(new THREE.Vector3(0,0,0));
@@ -658,7 +661,8 @@ function restart(){
 	pauseTime=0;
 	isEnd=0;
 	engineOn = 0;
-
+	score=0;
+	placeBonus();
 }
 
 function end(){
@@ -719,7 +723,7 @@ function createBoundaries() {
 	box2.name = "constraint";
 	box3.name = "constraint";
 	box4.name = "constraint";
-	
+
 	box1.position.set(MIN_X,0,0);
 	scene.add(box1);
 	box2.position.set(MAX_X,0,0);
@@ -733,7 +737,7 @@ function createBoundaries() {
 function createBonus() {
 	var geom = new THREE.SphereGeometry(1, 8, 8);
 	//var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
-	var mat = new THREE.MeshLambertMaterial({ color: 0xffff00,transparent: true, opacity: 0.6, wireframe: true });
+	var mat = new THREE.MeshLambertMaterial({ color: 0xffffff,transparent: true, opacity: 0.6, wireframe: true });
 
 	var bonus = new Physijs.SphereMesh( geom, mat, 0 );
 	bonus.name = "bonus-score";
@@ -867,7 +871,7 @@ document.onkeyup = handleKeyUp;
 document.onkeypress = handleKeyPress;
 
 var render = function () {
-	//testing(playerObject.position.x);
+	testing(playerObject.position.x);
 	//playerObject.setLinearVelocity({x: 0, y: 0, z:0})
 	//scene.simulate();
 	requestAnimationFrame(render);
@@ -899,7 +903,7 @@ var render = function () {
 
 	//changing the camera position a bit, so its not on top of the object - now changed in the keyPressedListener
 	//camera.position.x = 0;
-	//camera.position.y = 6;		
+	//camera.position.y = 6;
 	//camera.rotation.x = 0.2;
 
 	renderer.render(scene, camera);
