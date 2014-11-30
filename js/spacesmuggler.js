@@ -118,6 +118,8 @@ var LOW_Z_POS = -2;
 var dimensionShiftLocked = false;
 
 var lasers = [];
+var shootingSphereCoords = [130, -80];
+var shootingSphereTexture = "";
 
 var cameraMode = 1;
 
@@ -282,17 +284,17 @@ function loadPlayerOBJ() {
 			object.rotation.set(1.57079, -1.57079, 0);
 			object.position.y += 2;
 			playerObject.add(object);
-			playerObject.position.x = -20;
+			
+			playerObject.add(camera);		// za TEST - potrebna izboljsava
+			camera.position.z = 50;
+			playerObject.position.set(START_X,START_Y,0);
+			playerObject.rotation.set(0, 0, -1.57079);
+			
+			//playerObject.position.x = -20;
 			scene.add(playerObject);
 			
 			playerObject.addEventListener( 'collision', playerCollided);
 			playerObject.add(camera);
-							// delete
-							// var geom = new THREE.SphereGeometry(1, 8, 8);
-							// var texture = THREE.ImageUtils.loadTexture(asteroidTextures[p]);
-							// var mat = new THREE.MeshLambertMaterial({ color: 0xffff00,transparent: true, opacity: 0.6, wireframe: true });
-
-							// var bonus = new Physijs.SphereMesh( geom, mat, 0 );
 		});
 		
 	// var loader = new THREE.OBJLoader();
@@ -478,6 +480,10 @@ function checkCollision(){
 	}
 }
 
+function createShootigSphere() {
+	
+
+}
 
 function playerCollided( other_object, relative_velocity, relative_rotation, contact_normal ) {
 	// `this` has collided with `other_object` with an impact speed of `relative_velocity` and a rotational force of `relative_rotation` and at normal `contact_normal`
